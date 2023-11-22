@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
     const char* combinedTokenTypes[] = {
         "Identifier",             // идентификатор
         "Integer",                // целое число
-        "ComparisonOperation",    // операция сравнения
+        "LogicalOperation",    // операция сравнения
         // ArithmeticOperation,
         // LogicalOperation,
 
@@ -40,22 +40,25 @@ int main(int argc, char* argv[])
         "Semicolon",              // точка с запятой (';')
         "QuotationMark",          // кавычка ('"')
         "ArithmeticSign",         // знак арифметической операции ('+', '-', '*', '/')
-        "LogicalSign",            // знак логической операции ('&' или '|')
         "Other",                  // другие символы
     };
 
-    std::string str = "Hello, World!{} 1 != 0; 2>=1";
-    std::string str1 = 
-    "Hello, World!\n"
-    "I'm glad to see you again!\n"
-    "2>1; 9<<2; 3>=8;\n"
-    "1+1=2; 3*3=9; 4/2=2;\n"
-    "1&1=1; 1&0=0; 1|1=1; 1|0=1;";
-    std::vector<SimpleToken> tokens = TransliterationBlock::TransliterateString(str);
+    std::string str = "Hello, World{} 1 != 0; 2>=1";
+    // std::string str1 = 
+    // "Hello, World!\n"
+    // "I'm glad to see you again!\n"
+    // "2>1; 9<<2; 3>=8;\n"
+    // "1+1=2; 3*3=9; 4/2=2;\n"
+    // "1&1=1; 1&0=0; 1|1=1; 1|0=1;";
+    std::string str1 = "R(1)={\"op\":\"!=\",\"fO\":\"A(1,2)\",\"sO\":\"0\"};0";
+    std::string str2 = "R(2)={\"op\":\"!=\",\"fO\":\"A(1,2)\",\"sO\":\"0\"};A(1,2)";
+    std::string str3 = "R(1)={\"op\":\"==\",\"fO\":\"A(1,2)\",\"sO\":\"0\"};0";
+    std::string str4 = "R(2)={\"op\":\"==\",\"fO\":\"A(1,2)\",\"sO\":\"0\"};0";
+    std::vector<SimpleToken> tokens = TransliterationBlock::TransliterateString(str1);
 
     int i = 0;
     for (SimpleToken token: tokens) {
-        std::cout << str[i++] << '\t' << tokenTypes[static_cast<std::underlying_type<SimpleToken>::type>(token)] << std::endl;
+        std::cout << str1[i++] << '\t' << tokenTypes[static_cast<std::underlying_type<SimpleToken>::type>(token)] << std::endl;
     }
 
     std::cout << "" << std::endl;

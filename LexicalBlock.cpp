@@ -5,6 +5,11 @@ LexicalBlockState LexicalBlock::state = LexicalBlockState::SPACE_STATE;
 
 std::vector<CombinedToken> LexicalBlock::combinedTokenVector;
 
+void LexicalBlock::SwitchState(LexicalBlockState newState)
+{
+    LexicalBlock::state = newState;
+}
+
 void LexicalBlock::Process(SimpleToken token)
 {
     return;
@@ -22,9 +27,9 @@ void LexicalBlock::StartInteger(SimpleToken token)
     LexicalBlock::Process(token);
 }
 
-void LexicalBlock::StartComparisonOperation(SimpleToken token)
+void LexicalBlock::StartLogicalOperation(SimpleToken token)
 {
-    LexicalBlock::combinedTokenVector.push_back(CombinedToken::ComparisonOperation);
+    LexicalBlock::combinedTokenVector.push_back(CombinedToken::LogicalOperation);
     LexicalBlock::Process(token);
 }
 
@@ -82,11 +87,6 @@ void LexicalBlock::StartArithmeticSign(SimpleToken token)
     LexicalBlock::Process(token);
 }
 
-void LexicalBlock::StartLogicalSign(SimpleToken token)
-{
-    LexicalBlock::combinedTokenVector.push_back(CombinedToken::LogicalSign);
-    LexicalBlock::Process(token);
-}
 
 void LexicalBlock::ProcessSimpleTokenDependingOnState(SimpleToken token)
 {
@@ -97,11 +97,11 @@ void LexicalBlock::ProcessSimpleTokenDependingOnState(SimpleToken token)
                 {
                     case SimpleToken::Letter:
                         LexicalBlock::StartIdentifier(token);
-                        LexicalBlock::state = LexicalBlockState::IDENTIFIER_BEGIN;
+                        LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
                         return;
                     case SimpleToken::Digit:
                         LexicalBlock::StartInteger(token);
-                        LexicalBlock::state = LexicalBlockState::INTEGER;
+                        LexicalBlock::SwitchState(LexicalBlockState::INTEGER);
                         return;
                     case SimpleToken::OpeningCurlyBrace:
                         LexicalBlock::StartOpeningCurlyBrace(token);
@@ -128,24 +128,24 @@ void LexicalBlock::ProcessSimpleTokenDependingOnState(SimpleToken token)
                         LexicalBlock::StartQuotationMark(token);
                         return;
                     case SimpleToken::EqualSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ExclamationMark:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_EXCLAMATION_MARK);
                         return;
                     case SimpleToken::ComparisonSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ArithmeticSign:
                         LexicalBlock::StartArithmeticSign(token);
-                        LexicalBlock::state = LexicalBlockState::ARITHMETIC_OPERATION;
+                        LexicalBlock::SwitchState(LexicalBlockState::ARITHMETIC_OPERATION);
                         return;
                     case SimpleToken::LogicalSign:
-                        LexicalBlock::StartLogicalSign(token);
-                        LexicalBlock::state = LexicalBlockState::LOGICAL_OPERATION;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_END);
                         return;
                     case SimpleToken::SpaceSign:
                         return;
@@ -159,62 +159,62 @@ void LexicalBlock::ProcessSimpleTokenDependingOnState(SimpleToken token)
                         return;
                     case SimpleToken::Digit:
                         LexicalBlock::Process(token);
-                        LexicalBlock::state = LexicalBlockState::IDENTIFIER_END;
+                        LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_END);
                         return;
                     case SimpleToken::OpeningCurlyBrace:
                         LexicalBlock::StartOpeningCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingCurlyBrace:
                         LexicalBlock::StartClosingCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::OpeningParenthesis:
                         LexicalBlock::StartOpeningParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingParenthesis:
                         LexicalBlock::StartClosingParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Comma:
                         LexicalBlock::StartComma(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Colon:
                         LexicalBlock::StartColon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Semicolon:
                         LexicalBlock::StartSemicolon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::QuotationMark:
                         LexicalBlock::StartQuotationMark(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::EqualSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ExclamationMark:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_EXCLAMATION_MARK);
                         return;
                     case SimpleToken::ComparisonSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ArithmeticSign:
                         LexicalBlock::StartArithmeticSign(token);
-                        LexicalBlock::state = LexicalBlockState::ARITHMETIC_OPERATION;
+                        LexicalBlock::SwitchState(LexicalBlockState::ARITHMETIC_OPERATION);
                         return;
                     case SimpleToken::LogicalSign:
-                        LexicalBlock::StartLogicalSign(token);
-                        LexicalBlock::state = LexicalBlockState::LOGICAL_OPERATION;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_END);
                         return;
                     case SimpleToken::SpaceSign:
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                 }
 
@@ -223,65 +223,65 @@ void LexicalBlock::ProcessSimpleTokenDependingOnState(SimpleToken token)
                 {
                     case SimpleToken::Letter:
                         LexicalBlock::StartIdentifier(token);
-                        LexicalBlock::state = LexicalBlockState::IDENTIFIER_BEGIN;
+                        LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
                         return;
                     case SimpleToken::Digit:
                         LexicalBlock::Process(token);
                         return;
                     case SimpleToken::OpeningCurlyBrace:
                         LexicalBlock::StartOpeningCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingCurlyBrace:
                         LexicalBlock::StartClosingCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::OpeningParenthesis:
                         LexicalBlock::StartOpeningParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingParenthesis:
                         LexicalBlock::StartClosingParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Comma:
                         LexicalBlock::StartComma(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Colon:
                         LexicalBlock::StartColon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Semicolon:
                         LexicalBlock::StartSemicolon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::QuotationMark:
                         LexicalBlock::StartQuotationMark(token);
                         LexicalBlock::state = LexicalBlockState::SPACE_STATE;
                         return;
                     case SimpleToken::EqualSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ExclamationMark:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_EXCLAMATION_MARK);
                         return;
                     case SimpleToken::ComparisonSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ArithmeticSign:
                         LexicalBlock::StartArithmeticSign(token);
-                        LexicalBlock::state = LexicalBlockState::ARITHMETIC_OPERATION;
+                        LexicalBlock::SwitchState(LexicalBlockState::ARITHMETIC_OPERATION);
                         return;
                     case SimpleToken::LogicalSign:
-                        LexicalBlock::StartLogicalSign(token);
-                        LexicalBlock::state = LexicalBlockState::LOGICAL_OPERATION;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_END);
                         return;
                     case SimpleToken::SpaceSign:
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                 }
 
@@ -290,64 +290,64 @@ void LexicalBlock::ProcessSimpleTokenDependingOnState(SimpleToken token)
                 {
                     case SimpleToken::Letter:
                         LexicalBlock::StartIdentifier(token);
-                        LexicalBlock::state = LexicalBlockState::IDENTIFIER_BEGIN;
+                        LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
                         return;
                     case SimpleToken::Digit:
                         LexicalBlock::Process(token);
                         return;
                     case SimpleToken::OpeningCurlyBrace:
                         LexicalBlock::StartOpeningCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingCurlyBrace:
                         LexicalBlock::StartClosingCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::OpeningParenthesis:
                         LexicalBlock::StartOpeningParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingParenthesis:
                         LexicalBlock::StartClosingParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Comma:
                         LexicalBlock::Process(token);
                         return;
                     case SimpleToken::Colon:
                         LexicalBlock::StartColon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Semicolon:
                         LexicalBlock::StartSemicolon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::QuotationMark:
                         LexicalBlock::StartQuotationMark(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::EqualSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ExclamationMark:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_EXCLAMATION_MARK);
                         return;
                     case SimpleToken::ComparisonSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ArithmeticSign:
                         LexicalBlock::StartArithmeticSign(token);
-                        LexicalBlock::state = LexicalBlockState::ARITHMETIC_OPERATION;
+                        LexicalBlock::SwitchState(LexicalBlockState::ARITHMETIC_OPERATION);
                         return;
                     case SimpleToken::LogicalSign:
-                        LexicalBlock::StartLogicalSign(token);
-                        LexicalBlock::state = LexicalBlockState::LOGICAL_OPERATION;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_END);
                         return;
                     case SimpleToken::SpaceSign:
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                 }
 
@@ -356,270 +356,214 @@ void LexicalBlock::ProcessSimpleTokenDependingOnState(SimpleToken token)
                 {
                     case SimpleToken::Letter:
                         LexicalBlock::StartIdentifier(token);
-                        LexicalBlock::state = LexicalBlockState::IDENTIFIER_BEGIN;
+                        LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
                         return;
                     case SimpleToken::Digit:
                         LexicalBlock::StartInteger(token);
-                        LexicalBlock::state = LexicalBlockState::INTEGER;
+                        LexicalBlock::SwitchState(LexicalBlockState::INTEGER);
                         return;
                     case SimpleToken::OpeningCurlyBrace:
                         LexicalBlock::StartOpeningCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingCurlyBrace:
                         LexicalBlock::StartClosingCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::OpeningParenthesis:
                         LexicalBlock::StartOpeningParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingParenthesis:
                         LexicalBlock::StartClosingParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Comma:
                         LexicalBlock::Process(token);
                         return;
                     case SimpleToken::Colon:
                         LexicalBlock::StartColon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Semicolon:
                         LexicalBlock::StartSemicolon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::QuotationMark:
                         LexicalBlock::StartQuotationMark(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::EqualSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ExclamationMark:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_EXCLAMATION_MARK);
                         return;
                     case SimpleToken::ComparisonSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ArithmeticSign:
                         LexicalBlock::StartArithmeticSign(token);
-                        LexicalBlock::state = LexicalBlockState::ARITHMETIC_OPERATION;
+                        LexicalBlock::SwitchState(LexicalBlockState::ARITHMETIC_OPERATION);
                         return;
                     case SimpleToken::LogicalSign:
-                        LexicalBlock::StartLogicalSign(token);
-                        LexicalBlock::state = LexicalBlockState::LOGICAL_OPERATION;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_END);
                         return;
                     case SimpleToken::SpaceSign:
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                 }
 
-            case LexicalBlockState::LOGICAL_OPERATION:
+            case LexicalBlockState::LOGICAL_OPERATION_BEGIN:
                 switch (token)
                 {
                     case SimpleToken::Letter:
                         LexicalBlock::StartIdentifier(token);
-                        LexicalBlock::state = LexicalBlockState::IDENTIFIER_BEGIN;
+                        LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
                         return;
                     case SimpleToken::Digit:
                         LexicalBlock::StartInteger(token);
-                        LexicalBlock::state = LexicalBlockState::INTEGER;
+                        LexicalBlock::SwitchState(LexicalBlockState::INTEGER);
                         return;
                     case SimpleToken::OpeningCurlyBrace:
                         LexicalBlock::StartOpeningCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingCurlyBrace:
                         LexicalBlock::StartClosingCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::OpeningParenthesis:
                         LexicalBlock::StartOpeningParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingParenthesis:
                         LexicalBlock::StartClosingParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Comma:
                         LexicalBlock::Process(token);
                         return;
                     case SimpleToken::Colon:
                         LexicalBlock::StartColon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Semicolon:
                         LexicalBlock::StartSemicolon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::QuotationMark:
                         LexicalBlock::StartQuotationMark(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::EqualSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::Process(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_END);
                         return;
-                    case SimpleToken::ExclamationMark:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                    case SimpleToken::ExclamationMark:              // ошибка, если встречаем символ '!'
+                        throw std::logic_error("Wrong token");
                         return;
                     case SimpleToken::ComparisonSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ArithmeticSign:
                         LexicalBlock::StartArithmeticSign(token);
-                        LexicalBlock::state = LexicalBlockState::ARITHMETIC_OPERATION;
+                        LexicalBlock::SwitchState(LexicalBlockState::ARITHMETIC_OPERATION);
                         return;
                     case SimpleToken::LogicalSign:
-                        LexicalBlock::StartLogicalSign(token);
-                        LexicalBlock::state = LexicalBlockState::LOGICAL_OPERATION;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_END);
                         return;
                     case SimpleToken::SpaceSign:
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                 }
 
-            case LexicalBlockState::COMPARISON_OPERATION_BEGIN:
+            case LexicalBlockState::LOGICAL_OPERATION_END:
                 switch (token)
                 {
                     case SimpleToken::Letter:
                         LexicalBlock::StartIdentifier(token);
-                        LexicalBlock::state = LexicalBlockState::IDENTIFIER_BEGIN;
+                        LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
                         return;
                     case SimpleToken::Digit:
                         LexicalBlock::StartInteger(token);
-                        LexicalBlock::state = LexicalBlockState::INTEGER;
+                        LexicalBlock::SwitchState(LexicalBlockState::INTEGER);
                         return;
                     case SimpleToken::OpeningCurlyBrace:
                         LexicalBlock::StartOpeningCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingCurlyBrace:
                         LexicalBlock::StartClosingCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::OpeningParenthesis:
                         LexicalBlock::StartOpeningParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::ClosingParenthesis:
                         LexicalBlock::StartClosingParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Comma:
                         LexicalBlock::Process(token);
                         return;
                     case SimpleToken::Colon:
                         LexicalBlock::StartColon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::Semicolon:
                         LexicalBlock::StartSemicolon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::QuotationMark:
                         LexicalBlock::StartQuotationMark(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
                     case SimpleToken::EqualSign:
-                        LexicalBlock::Process(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_END;
-                        return;
-                    // case SimpleToken::ExclamationMark:
-                    //     LexicalBlock::StartComparisonOperation(token);
-                    //     LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
-                    //     return;
-                    case SimpleToken::ComparisonSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
-                        return;
-                    case SimpleToken::ArithmeticSign:
-                        LexicalBlock::StartArithmeticSign(token);
-                        LexicalBlock::state = LexicalBlockState::ARITHMETIC_OPERATION;
-                        return;
-                    case SimpleToken::LogicalSign:
-                        LexicalBlock::StartLogicalSign(token);
-                        LexicalBlock::state = LexicalBlockState::LOGICAL_OPERATION;
-                        return;
-                    case SimpleToken::SpaceSign:
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
-                        return;
-                }
-
-            case LexicalBlockState::COMPARISON_OPERATION_END:
-                switch (token)
-                {
-                    case SimpleToken::Letter:
-                        LexicalBlock::StartIdentifier(token);
-                        LexicalBlock::state = LexicalBlockState::IDENTIFIER_BEGIN;
-                        return;
-                    case SimpleToken::Digit:
-                        LexicalBlock::StartInteger(token);
-                        LexicalBlock::state = LexicalBlockState::INTEGER;
-                        return;
-                    case SimpleToken::OpeningCurlyBrace:
-                        LexicalBlock::StartOpeningCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
-                        return;
-                    case SimpleToken::ClosingCurlyBrace:
-                        LexicalBlock::StartClosingCurlyBrace(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
-                        return;
-                    case SimpleToken::OpeningParenthesis:
-                        LexicalBlock::StartOpeningParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
-                        return;
-                    case SimpleToken::ClosingParenthesis:
-                        LexicalBlock::StartClosingParenthesis(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
-                        return;
-                    case SimpleToken::Comma:
-                        LexicalBlock::Process(token);
-                        return;
-                    case SimpleToken::Colon:
-                        LexicalBlock::StartColon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
-                        return;
-                    case SimpleToken::Semicolon:
-                        LexicalBlock::StartSemicolon(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
-                        return;
-                    case SimpleToken::QuotationMark:
-                        LexicalBlock::StartQuotationMark(token);
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
-                        return;
-                    case SimpleToken::EqualSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ExclamationMark:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_EXCLAMATION_MARK);
                         return;
                     case SimpleToken::ComparisonSign:
-                        LexicalBlock::StartComparisonOperation(token);
-                        LexicalBlock::state = LexicalBlockState::COMPARISON_OPERATION_BEGIN;
+                        LexicalBlock::StartLogicalOperation(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_BEGIN);
                         return;
                     case SimpleToken::ArithmeticSign:
                         LexicalBlock::StartArithmeticSign(token);
-                        LexicalBlock::state = LexicalBlockState::ARITHMETIC_OPERATION;
+                        LexicalBlock::SwitchState(LexicalBlockState::ARITHMETIC_OPERATION);
                         return;
                     case SimpleToken::LogicalSign:
-                        LexicalBlock::StartLogicalSign(token);
-                        LexicalBlock::state = LexicalBlockState::LOGICAL_OPERATION;
+                        LexicalBlock::StartLogicalOperation(token);
                         return;
                     case SimpleToken::SpaceSign:
-                        LexicalBlock::state = LexicalBlockState::SPACE_STATE;
+                        LexicalBlock::SwitchState(LexicalBlockState::SPACE_STATE);
                         return;
+                }
+            
+            case LexicalBlockState::LOGICAL_OPERATION_EXCLAMATION_MARK:
+                switch (token)
+                {
+                    case SimpleToken::EqualSign:
+                        LexicalBlock::Process(token);
+                        LexicalBlock::SwitchState(LexicalBlockState::LOGICAL_OPERATION_END);
+                        return;
+                    default:
+                        throw std::logic_error("Wrong token");
                 }
     }
 }
+
+
 std::vector<CombinedToken> LexicalBlock::TransliterateSimpleTokenVector(std::vector<SimpleToken> tokens)
 {
     for (SimpleToken token : tokens) {

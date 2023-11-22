@@ -3,13 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <stdexcept>
 #include "TransliterationBlock.h"
 
 enum class ComplexToken
 {
     Identifier,             // идентификатор
     Integer,                // целое число
-    ComparisonOperation,       // операция сравнения
+    LogicalOperation,       // операция сравнения
     // ArithmeticOperation,
     // LogicalOperation,
 };
@@ -18,7 +19,7 @@ enum class CombinedToken
 {
     Identifier,             // идентификатор
     Integer,                // целое число
-    ComparisonOperation,    // операция сравнения
+    LogicalOperation,    // операция сравнения
     // ArithmeticOperation,
     // LogicalOperation,
 
@@ -31,7 +32,6 @@ enum class CombinedToken
     Semicolon,              // точка с запятой (';')
     QuotationMark,          // кавычка ('"')
     ArithmeticSign,         // знак арифметической операции ('+', '-', '*', '/')
-    LogicalSign,            // знак логической операции ('&' или '|')
     Other,                  // другие символы
 };
 
@@ -42,9 +42,9 @@ enum class LexicalBlockState
     IDENTIFIER_END,
     INTEGER,
     ARITHMETIC_OPERATION,
-    LOGICAL_OPERATION,
-    COMPARISON_OPERATION_BEGIN,
-    COMPARISON_OPERATION_END,
+    LOGICAL_OPERATION_BEGIN,
+    LOGICAL_OPERATION_END,
+    LOGICAL_OPERATION_EXCLAMATION_MARK,
 };
 
 // класс реализует алгоритм работы ДКА
@@ -56,11 +56,13 @@ private:
     static std::vector<CombinedToken> combinedTokenVector;      // итоговый список лексем
 
     static LexicalBlockState state;     // состояние автомата
+    static void SwitchState(LexicalBlockState newState);
+
     static void Process(SimpleToken token);
     // сложные (составные) лексемы
     static void StartIdentifier(SimpleToken token);
     static void StartInteger(SimpleToken token);
-    static void StartComparisonOperation(SimpleToken token);
+    static void StartLogicalOperation(SimpleToken token);
     // простые (односимвольные) лексемы
     static void StartOpeningCurlyBrace(SimpleToken token);
     static void StartClosingCurlyBrace(SimpleToken token);
@@ -71,7 +73,6 @@ private:
     static void StartSemicolon(SimpleToken token);
     static void StartQuotationMark(SimpleToken token);
     static void StartArithmeticSign(SimpleToken token);
-    static void StartLogicalSign(SimpleToken token);
     
     static void ProcessSimpleTokenDependingOnState(SimpleToken token);
 };
