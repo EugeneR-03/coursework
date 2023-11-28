@@ -1,63 +1,63 @@
 #include "TransliterationBlock.h"
 
-SimpleToken TransliterationBlock::TransliterateSymbol(char symbol)
+SimpleToken TransliterationBlock::TransliterateSymbol(char symbol, int index)
 {
     // проверка, является ли символ буквой
     if (std::isalpha(symbol)) {
-        return SimpleToken::Letter;
+        return SimpleToken(SimpleTokenType::Letter, index);
     }
 
     // проверка, является ли символ цифрой
     else if (std::isdigit(symbol)) {
-        return SimpleToken::Digit;
+        return SimpleToken(SimpleTokenType::Digit, index);
     }
 
     // проверка на уникальные символы (не буква, не цифра)
     switch (symbol)
     {
         case '{':
-            return SimpleToken::OpeningCurlyBrace;
+            return SimpleToken(SimpleTokenType::OpeningCurlyBrace, index);
         case '}':
-            return SimpleToken::ClosingCurlyBrace;
+            return SimpleToken(SimpleTokenType::ClosingCurlyBrace, index);
         case '(':
-            return SimpleToken::OpeningParenthesis;
+            return SimpleToken(SimpleTokenType::OpeningParenthesis, index);
         case ')':
-            return SimpleToken::ClosingParenthesis;
+            return SimpleToken(SimpleTokenType::ClosingParenthesis, index);
         case ',':
-            return SimpleToken::Comma;
+            return SimpleToken(SimpleTokenType::Comma, index);
         case ':':
-            return SimpleToken::Colon;
+            return SimpleToken(SimpleTokenType::Colon, index);
         case ';':
-            return SimpleToken::Semicolon;
+            return SimpleToken(SimpleTokenType::Semicolon, index);
         case '\"':
-            return SimpleToken::QuotationMark;
+            return SimpleToken(SimpleTokenType::QuotationMark, index);
         case '=':
-            return SimpleToken::EqualSign;
+            return SimpleToken(SimpleTokenType::EqualSign, index);
         case '>':
         case '<':
-            return SimpleToken::ComparisonSign;
+            return SimpleToken(SimpleTokenType::ComparisonSign, index);
         case '!':
-            return SimpleToken::ExclamationMark;
+            return SimpleToken(SimpleTokenType::ExclamationMark, index);
         case '+':
         case '-':
         case '*':
         case '/':
-            return SimpleToken::ArithmeticSign;
+            return SimpleToken(SimpleTokenType::ArithmeticSign, index);
         case '&':
         case '|':
-            return SimpleToken::LogicalSign;
+            return SimpleToken(SimpleTokenType::LogicalSign, index);
         case ' ':
-            return SimpleToken::SpaceSign;
+            return SimpleToken(SimpleTokenType::SpaceSign, index);
         default:
-            return SimpleToken::Other;
+            return SimpleToken(SimpleTokenType::Other, index);
     }
 }
 
 std::vector<SimpleToken> TransliterationBlock::TransliterateString(std::string str)
 {
     std::vector<SimpleToken> tokens;
-    for (char symbol : str) {
-        tokens.push_back(TransliterateSymbol(symbol));
+    for (unsigned i = 0; i < str.length(); i++) {
+        tokens.push_back(TransliterateSymbol(str[i], i));
     }
     return tokens;
 }

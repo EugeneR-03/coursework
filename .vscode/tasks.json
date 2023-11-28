@@ -5,9 +5,11 @@
             "label": "C/C++: g++.exe сборка активного файла",
             "command": "C:\\Qt\\mingw_x64\\x64\\bin\\g++.exe",
             "args": [
+                "-std=c++17",
                 "-fdiagnostics-color=always",
                 "-g",
-                "${file}",
+                // "${file}",
+                "*.cpp",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],

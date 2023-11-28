@@ -3,67 +3,44 @@
 
 #include <string>
 #include <vector>
+#include <variant>
+#include <optional>
 #include <stdexcept>
+#include "Tokens.h"
 #include "TransliterationBlock.h"
+#include "SpecialIdentifierBlock.h"
 
-enum class ComplexToken
-{
-    Identifier,             // идентификатор
-    Integer,                // целое число
-    LogicalOperation,       // операция сравнения
-    // ArithmeticOperation,
-    // LogicalOperation,
-};
-
-enum class CombinedToken
-{
-    Identifier,             // идентификатор
-    Integer,                // целое число
-    LogicalOperation,    // операция сравнения
-    // ArithmeticOperation,
-    // LogicalOperation,
-
-    OpeningCurlyBrace,      // открывающая фигурная скобка ('{')
-    ClosingCurlyBrace,      // закрывающая фигурная скобка ('}')
-    OpeningParenthesis,     // открывающая круглая скобка ('(')
-    ClosingParenthesis,     // закрывающая круглая скобка (')')
-    Comma,                  // запятая (',')
-    Colon,                  // двоеточие (':')
-    Semicolon,              // точка с запятой (';')
-    QuotationMark,          // кавычка ('"')
-    ArithmeticSign,         // знак арифметической операции ('+', '-', '*', '/')
-    Other,                  // другие символы
-};
 
 enum class LexicalBlockState
 {
-    SPACE_STATE,
+    SPACE,
     IDENTIFIER_BEGIN,
     IDENTIFIER_END,
     INTEGER,
-    ARITHMETIC_OPERATION,
-    LOGICAL_OPERATION_BEGIN,
-    LOGICAL_OPERATION_END,
-    LOGICAL_OPERATION_EXCLAMATION_MARK,
 };
 
 // класс реализует алгоритм работы ДКА
 class LexicalBlock
 {
 public:
-    static std::vector<CombinedToken> TransliterateSimpleTokenVector(std::vector<SimpleToken> tokens);
+    static std::vector<std::variant<SimpleToken, ComplexToken>> TransliterateSimpleTokenVector(std::vector<std::variant<SimpleToken, ComplexToken>> tokens);
+    static std::vector<std::variant<SimpleToken, ComplexToken>> TransliterateString(std::string str);
 private:
-    static std::vector<CombinedToken> combinedTokenVector;      // итоговый список лексем
+    static std::vector<std::variant<SimpleToken, ComplexToken>> combinedTokenVector;      // итоговый список лексем
 
     static LexicalBlockState state;     // состояние автомата
     static void SwitchState(LexicalBlockState newState);
 
-    static void Process(SimpleToken token);
+    static void Process(std::variant<SimpleToken, ComplexToken> token, std::optional<char> symbol);
     // сложные (составные) лексемы
-    static void StartIdentifier(SimpleToken token);
-    static void StartInteger(SimpleToken token);
-    static void StartLogicalOperation(SimpleToken token);
+    static void StartIdentifier(SimpleToken token, char symbol);
+    static void StartInteger(SimpleToken token, char symbol);
     // простые (односимвольные) лексемы
+    static void StartArithmeticSign(SimpleToken token);
+    static void StartComparisonSign(SimpleToken token);
+    static void StartLogicalSign(SimpleToken token);
+    static void StartExclamationMark(SimpleToken token);
+    static void StartEqualSign(SimpleToken token);
     static void StartOpeningCurlyBrace(SimpleToken token);
     static void StartClosingCurlyBrace(SimpleToken token);
     static void StartOpeningParenthesis(SimpleToken token);
@@ -72,9 +49,12 @@ private:
     static void StartColon(SimpleToken token);
     static void StartSemicolon(SimpleToken token);
     static void StartQuotationMark(SimpleToken token);
-    static void StartArithmeticSign(SimpleToken token);
     
-    static void ProcessSimpleTokenDependingOnState(SimpleToken token);
+    static void ProcessSymbolInState_SPACE(SimpleToken token, std::optional<char> symbol);
+    static void ProcessSymbolInState_IDENTIFIER_BEGIN(SimpleToken token, std::optional<char> symbol);
+    static void ProcessSymbolInState_IDENTIFIER_END(SimpleToken token, std::optional<char> symbol);
+    static void ProcessSymbolInState_INTEGER(SimpleToken token, std::optional<char> symbol);
+    static void ProcessSymbolDependingOnState(SimpleToken token, std::optional<char> symbol);
 };
 
 #endif
