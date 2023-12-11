@@ -1,5 +1,4 @@
-#ifndef LEXICALBLOCK_H
-#define LEXICALBLOCK_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -10,6 +9,7 @@
 #include "TransliterationBlock.h"
 #include "SpecialIdentifierBlock.h"
 
+using VariableToken = std::variant<SimpleToken, ComplexToken>;
 
 enum class LexicalBlockState
 {
@@ -23,15 +23,15 @@ enum class LexicalBlockState
 class LexicalBlock
 {
 public:
-    static std::vector<std::variant<SimpleToken, ComplexToken>> TransliterateSimpleTokenVector(std::vector<std::variant<SimpleToken, ComplexToken>> tokens);
-    static std::vector<std::variant<SimpleToken, ComplexToken>> TransliterateString(std::string str);
+    static std::vector<VariableToken> TransliterateSimpleTokenVector(std::vector<VariableToken> tokens);
+    static std::vector<VariableToken> TransliterateString(std::string str);
 private:
-    static std::vector<std::variant<SimpleToken, ComplexToken>> combinedTokenVector;      // итоговый список лексем
+    static std::vector<VariableToken> combinedTokenVector;      // итоговый список лексем
 
     static LexicalBlockState state;     // состояние автомата
     static void SwitchState(LexicalBlockState newState);
 
-    static void Process(std::variant<SimpleToken, ComplexToken> token, std::optional<char> symbol);
+    static void Process(VariableToken token, std::optional<char> symbol);
     // сложные (составные) лексемы
     static void StartIdentifier(SimpleToken token, char symbol);
     static void StartInteger(SimpleToken token, char symbol);
@@ -56,5 +56,3 @@ private:
     static void ProcessSymbolInState_INTEGER(SimpleToken token, std::optional<char> symbol);
     static void ProcessSymbolDependingOnState(SimpleToken token, std::optional<char> symbol);
 };
-
-#endif

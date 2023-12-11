@@ -1,5 +1,4 @@
-#ifndef TRANSLITERATIONBLOCK_H
-#define TRANSLITERATIONBLOCK_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -11,6 +10,3 @@ public:
     static SimpleToken TransliterateSymbol(char symbol, int index);
     static std::vector<SimpleToken> TransliterateString(std::string str);
 };
-
-
-#endif

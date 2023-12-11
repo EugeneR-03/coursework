@@ -3,14 +3,14 @@
 // начальное значение
 LexicalBlockState LexicalBlock::state = LexicalBlockState::SPACE;
 
-std::vector<std::variant<SimpleToken, ComplexToken>> LexicalBlock::combinedTokenVector;
+std::vector<VariableToken> LexicalBlock::combinedTokenVector;
 
 void LexicalBlock::SwitchState(LexicalBlockState newState)
 {
     LexicalBlock::state = newState;
 }
 
-void LexicalBlock::Process(std::variant<SimpleToken, ComplexToken> token, std::optional<char> symbol = std::nullopt)
+void LexicalBlock::Process(VariableToken token, std::optional<char> symbol = std::nullopt)
 {
     if (std::holds_alternative<ComplexToken>(combinedTokenVector[combinedTokenVector.size() - 2]))
     {
@@ -468,7 +468,7 @@ void LexicalBlock::ProcessSymbolDependingOnState(SimpleToken token, std::optiona
     }
 }
 
-std::vector<std::variant<SimpleToken, ComplexToken>> LexicalBlock::TransliterateString(std::string str)
+std::vector<VariableToken> LexicalBlock::TransliterateString(std::string str)
 {
     for (int i = 0; i < str.size(); i++)
     {
@@ -477,7 +477,7 @@ std::vector<std::variant<SimpleToken, ComplexToken>> LexicalBlock::Transliterate
         SimpleToken token = TransliterationBlock::TransliterateSymbol(symbol, index);
         LexicalBlock::ProcessSymbolDependingOnState(token, symbol);
     }
-    std::vector<std::variant<SimpleToken, ComplexToken>> result = LexicalBlock::combinedTokenVector;
+    std::vector<VariableToken> result = LexicalBlock::combinedTokenVector;
     LexicalBlock::combinedTokenVector.clear();
     return result;
 }

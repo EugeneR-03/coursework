@@ -1,25 +1,26 @@
-#ifndef TOKENS_H
-#define TOKENS_H
+#pragma once
 
 #include <string>
 #include <variant>
 #include "TokenTypes.h"
 
-struct SimpleToken
+template <typename TokenType>
+struct Token
 {
-    SimpleTokenType type;
+    TokenType type;
     int index;
 
+    Token(TokenType tokenType, int index);
+};
+
+struct SimpleToken : Token<SimpleTokenType>
+{
     SimpleToken(SimpleTokenType tokenType, int index);
 };
 
-struct ComplexToken
+struct ComplexToken : Token<std::variant<ComplexTokenType, SpecialIdentifierType>>
 {
-    std::variant<ComplexTokenType, SpecialIdentifierType> type;
     std::string value;
-    int index;
 
-    ComplexToken(ComplexTokenType tokenType, std::string value, int index);
+    ComplexToken(std::variant<ComplexTokenType, SpecialIdentifierType> tokenType, std::string value, int index);
 };
-
-#endif

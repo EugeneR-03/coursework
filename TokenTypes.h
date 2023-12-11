@@ -1,5 +1,4 @@
-#ifndef TOKENTYPES_H   
-#define TOKENTYPES_H
+#pragma once
 
 enum class SimpleTokenType
 {
@@ -38,5 +37,3 @@ enum class SpecialIdentifierType
     SquareOfNumber,
     SquareRootOfNumber,
 };
-
-#endif
