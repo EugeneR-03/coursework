@@ -1,5 +1,4 @@
-#include "SpecialIdentifierBlock.h"
-
+#include "SpecialIdentifierBlock.hpp"
 
 std::unordered_map<std::size_t, SpecialIdentifierType> SpecialIdentifierBlock::specialIdentifiersHashes = {
     {std::hash<std::string>{}("op"), SpecialIdentifierType::Operation},                                 // Operation

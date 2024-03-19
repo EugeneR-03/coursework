@@ -1,9 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
-#include "../blocks/Tokens.h"
-#include "../blocks/TransliterationBlock.h"
-#include "../blocks/LexicalBlock.h"
-#include "../blocks/SyntaxBlock.h"
+#include "../blocks/Tokens.hpp"
+#include "../blocks/TransliterationBlock.hpp"
+#include "../blocks/LexicalBlock.hpp"
+#include "../blocks/SyntaxBlock.hpp"
 
 TEST_SUITE_BEGIN("TransliterationBlock");
 TEST_CASE("a == Letter")

@@ -5,9 +5,9 @@
 #include <variant>
 #include <optional>
 #include <stdexcept>
-#include "Tokens.h"
-#include "TransliterationBlock.h"
-#include "SpecialIdentifierBlock.h"
+#include "Tokens.hpp"
+#include "TransliterationBlock.hpp"
+#include "SpecialIdentifierBlock.hpp"
 
 using VariableToken = std::variant<SimpleToken, ComplexToken>;
 

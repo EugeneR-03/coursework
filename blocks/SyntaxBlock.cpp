@@ -1,4 +1,4 @@
-#include "SyntaxBlock.h"
+#include "SyntaxBlock.hpp"
 
 using VariableToken = std::variant<SimpleToken, ComplexToken>;
 

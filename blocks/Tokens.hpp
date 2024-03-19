@@ -2,7 +2,7 @@
 
 #include <string>
 #include <variant>
-#include "TokenTypes.h"
+#include "TokenTypes.hpp"
 
 template <typename TokenType>
 struct Token

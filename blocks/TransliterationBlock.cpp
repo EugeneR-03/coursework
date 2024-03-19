@@ -1,4 +1,4 @@
-#include "TransliterationBlock.h"
+#include "TransliterationBlock.hpp"
 
 SimpleToken TransliterationBlock::TransliterateSymbol(char symbol, int index = 0)
 {

@@ -1,4 +1,4 @@
-#include "Tokens.h"
+#include "Tokens.hpp"
 
 template<typename TokenType>
 Token<TokenType>::Token(TokenType tokenType, int index) : type(tokenType), index(index) {}

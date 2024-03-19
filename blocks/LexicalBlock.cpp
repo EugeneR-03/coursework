@@ -1,4 +1,4 @@
-#include "LexicalBlock.h"
+#include "LexicalBlock.hpp"
 
 // начальное значение
 LexicalBlockState LexicalBlock::state = LexicalBlockState::SPACE;

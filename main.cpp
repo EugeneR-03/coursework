@@ -1,6 +1,6 @@
-#include "./blocks/TransliterationBlock.h"
-#include "./blocks/LexicalBlock.h"
-#include "./blocks/SyntaxBlock.h"
+#include "./blocks/TransliterationBlock.hpp"
+#include "./blocks/LexicalBlock.hpp"
+#include "./blocks/SyntaxBlock.hpp"
 #include <iostream>
 
 // #define NDEBUG

@@ -2,8 +2,8 @@
 
 #include <string>
 #include <unordered_map>
-#include "Tokens.h"
-#include "LexicalBlock.h"
+#include "Tokens.hpp"
+#include "LexicalBlock.hpp"
 
 class SpecialIdentifierBlock
 {
