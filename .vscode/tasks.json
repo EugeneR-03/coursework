@@ -8,8 +8,8 @@
                 "-std=c++17",
                 "-fdiagnostics-color=always",
                 "-g",
-                // "${file}",
-                "*.cpp",
+                "${fileDirname}\\*.cpp",
+                "${fileDirname}\\blocks\\*.cpp",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
@@ -23,7 +23,32 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "detail": "Задача создана отладчиком."
+            "detail": "Компиляция Main."
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe сборка тестов",
+            "command": "C:\\Qt\\mingw_x64\\x64\\bin\\g++.exe",
+            "args": [
+                "-std=c++17",
+                "-fdiagnostics-color=always",
+                "-g",
+                "${fileDirname}\\..\\blocks\\*.cpp",
+                "${fileDirname}\\..\\tests\\*.cpp",
+                "-o",
+                "${fileDirname}\\..\\tests\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "test"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Тесты."
         }
     ],
     "version": "2.0.0"
