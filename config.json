@@ -1,0 +1,8 @@
+{
+    "Settings": {
+        "InputFilePath": "./data/input.txt",
+        "OutputFilePath": "./data/output.txt",
+        "DebugMode": "Normal",
+        "Errors": "AllWithoutInner"
+    }
+}

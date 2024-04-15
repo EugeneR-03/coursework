@@ -2,31 +2,61 @@
 
 #include <string>
 #include <vector>
-#include <stack>
+#include <boost/format.hpp>
+#include <boost/signals2.hpp>
+#include <boost/bind/bind.hpp>
+#include <iostream>
 
 #include "Tokens.hpp"
+#include "Messages.hpp"
 
 using VariableToken = std::variant<SimpleToken, ComplexToken>;
 
-class CFGHighLevelToken
+enum class SyntaxBlockWorkingMode
 {
-public:
-    static bool Identifier();
-    static bool Operation();
-    static bool LogicalOperation();
-    static bool ArithmeticOperation();
+    UntilFirstError,
+    AllErrorsWithoutInner,
+    AllErrors,
 };
+
+// class CFGHighLevelToken
+// {
+// public:
+//     static bool Identifier();
+//     static bool Operation();
+//     static bool LogicalOperation();
+//     static bool ArithmeticOperation();
+// };
+
+
+// class CFGTemplate
+// {
+// private:
+//     int beginningIndex;
+//     virtual void Cancel(bool isSendingSignal) const = 0;
+// public:
+//     boost::signals2::signal<void (int)> onErrorOccurs;
+//     virtual bool Check(bool isSendingSignals = true) = 0;
+// };
 
 class SyntaxBlock
 {
+private:
+    static SyntaxBlockWorkingMode workingMode;
+    static std::vector<VariableToken> tokenVector;
+    static int currentTokenIndexInVector;
+    static int stringIndex;
 public:
+    static SyntaxBlockWorkingMode GetWorkingMode();
+    static void SetWorkingMode(SyntaxBlockWorkingMode workingMode);
+    static int GetStringIndex();
+    static void SetStringIndex(int index);
     static void LoadTokenVector(std::vector<VariableToken> tokenVector);
     static void LoadToken();
     static VariableToken GetCurrentToken();
-    // static void RemoveTokenFromStack();
-    // static VariableToken GetAndRemoveTokenFromStack();
-    // static void ClearStack();
+    static int GetCurrentTokenIndex();
     static void CancelLoadToken();
+    static Message MakeMessage(VariableToken token, std::string message);
 
     class CFG
     {
@@ -37,93 +67,106 @@ public:
             class OpeningCurlyBrace
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class ClosingCurlyBrace
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class OpeningParenthesis 
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class ClosingParenthesis
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class Comma
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class Colon
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class Semicolon
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class QuotationMark
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class EqualSign
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class ComparisonSign
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class ExclamationMark
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class ArithmeticSign
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class LogicalSign
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
         };
 
@@ -133,222 +176,258 @@ public:
             class Operation
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class OperandOfUnaryOperation
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class FirstOperandOfBinaryOperation
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class SecondOperandOfBinaryOperation
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class V
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class No
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class Real
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class Solution
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class Modulus
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class SquareOfNumber
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class SquareRootOfNumber
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
         };
 
         class Variable
         {
             static int beginningIndex;
-            static void Cancel();
         public:
-            static bool Check();
+            static boost::signals2::signal<void (Message)> onErrorOccurs;
+            static bool Check(bool isSendingSignals = true);
+            static void Cancel(bool isSendingSignal = true);
             class Edge
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class Identifier
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class Integer
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
         };
 
         class Operation
         {
             static int beginningIndex;
-            static void Cancel();
         public:
-            static bool Check();
+            static boost::signals2::signal<void (Message)> onErrorOccurs;
+            static bool Check(bool isSendingSignals = true);
+            static void Cancel(bool isSendingSignal = true);
             class Logical
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class Arithmetic
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
         };
 
         class String
         {
             static int beginningIndex;
-            static void Cancel();
         public:
-            static bool Check();
+            static boost::signals2::signal<void (Message)> onErrorOccurs;
+            static bool Check(bool isSendingSignals = true);
+            static void Cancel(bool isSendingSignal = true);
+            static void CheckAllInnerParts(bool isSendingSignals = true, bool isCheckingInner = false);
+
             class Beginning
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class Logical
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true, bool isCheckingInner = true);
+                static void Cancel(bool isSendingSignal = true);
             };
             class Arithmetic
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true, bool isCheckingInner = true);
+                static void Cancel(bool isSendingSignal = true);
 
                 class NoRealSolution
                 {
                     static int beginningIndex;
-                    static void Cancel();
                 public:
-                    static bool Check();
+                    static boost::signals2::signal<void (Message)> onErrorOccurs;
+                    static bool Check(bool isSendingSignals = true);
+                    static void Cancel(bool isSendingSignal = true);
                 };
             };
             class Inner
             {
                 static int beginningIndex;
-                static void Cancel();
             public:
-                static bool Check();
+                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static bool Check(bool isSendingSignals = true);
+                static void Cancel(bool isSendingSignal = true);
                 class Operation
                 {
                     static int beginningIndex;
-                    static void Cancel();
                 public:
-                    static bool Check();
+                    static boost::signals2::signal<void (Message)> onErrorOccurs;
+                    static bool Check(bool isSendingSignals = true);
+                    static void Cancel(bool isSendingSignal = true);
                 };
                 class Operand
                 {
                     static int beginningIndex;
-                    static void Cancel();
                 public:
-                    static bool Check();
+                    static boost::signals2::signal<void (Message)> onErrorOccurs;
+                    static bool Check(bool isSendingSignals = true, bool isCheckingInner = true);
+                    static void Cancel(bool isSendingSignal = true);
+
+                    class Variable
+                    {
+                        static int beginningIndex;
+                    public:
+                        static boost::signals2::signal<void (Message)> onErrorOccurs;
+                        static bool Check(bool isSendingSignals = true, bool isCheckingInner = true);
+                        static void Cancel(bool isSendingSignal = true);
+                    };
                     class Unary
                     {
                         static int beginningIndex;
-                        static void Cancel();
                     public:
-                        static bool Check();
+                        static boost::signals2::signal<void (Message)> onErrorOccurs;
+                        static bool Check(bool isSendingSignals = true, bool isCheckingInner = true);
+                        static void Cancel(bool isSendingSignal = true);
                     };
                     class Binary
                     {
                         static int beginningIndex;
-                        static void Cancel();
                     public:
-                        static bool Check();
+                        static boost::signals2::signal<void (Message)> onErrorOccurs;
+                        static bool Check(bool isSendingSignals = true, bool isCheckingInner = true);
+                        static void Cancel(bool isSendingSignal = true);
                         class First
                         {
                             static int beginningIndex;
-                            static void Cancel();
                         public:
-                            static bool Check();
+                            static boost::signals2::signal<void (Message)> onErrorOccurs;
+                            static bool Check(bool isSendingSignals = true, bool isCheckingInner = true);
+                            static void Cancel(bool isSendingSignal = true);
                         };
                         class Second
                         {
                             static int beginningIndex;
-                            static void Cancel();
                         public:
-                            static bool Check();
+                            static boost::signals2::signal<void (Message)> onErrorOccurs;
+                            static bool Check(bool isSendingSignals = true, bool isCheckingInner = true);
+                            static void Cancel(bool isSendingSignal = true);
                         };
                     };
                 };
             };
         };
     };    
-
-private:
-    static std::stack<VariableToken> tokenStack;
-    static std::vector<VariableToken> tokenVector;
-    static int currentTokenIndexInVector;
 };

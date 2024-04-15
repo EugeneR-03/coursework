@@ -3,10 +3,13 @@
         {
             "type": "cppbuild",
             "label": "C/C++: g++.exe сборка активного файла",
-            "command": "C:\\Qt\\mingw_x64\\x64\\bin\\g++.exe",
+            "command": "g++.exe",
             "args": [
                 "-std=c++17",
+                "-fopenmp",
                 "-fdiagnostics-color=always",
+                "-I",
+                "C:\\Boost\\boost_1_84_0",
                 "-g",
                 "${fileDirname}\\*.cpp",
                 "${fileDirname}\\blocks\\*.cpp",
@@ -21,17 +24,19 @@
             ],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
-            "detail": "Компиляция Main."
+            "detail": "Задача создана отладчиком."
         },
         {
             "type": "cppbuild",
             "label": "C/C++: g++.exe сборка тестов",
-            "command": "C:\\Qt\\mingw_x64\\x64\\bin\\g++.exe",
+            "command": "g++.exe",
             "args": [
                 "-std=c++17",
                 "-fdiagnostics-color=always",
+                "-I",
+                "C:\\Boost\\boost_1_84_0",
                 "-g",
                 "${fileDirname}\\..\\blocks\\*.cpp",
                 "${fileDirname}\\..\\tests\\*.cpp",
@@ -39,17 +44,18 @@
                 "${fileDirname}\\..\\tests\\${fileBasenameNoExtension}.exe"
             ],
             "options": {
-                "cwd": "test"
+                "cwd": "${fileDirname}"
             },
             "problemMatcher": [
                 "$gcc"
             ],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
             "detail": "Тесты."
         }
+
     ],
     "version": "2.0.0"
 }

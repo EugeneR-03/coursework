@@ -16,7 +16,7 @@ struct Token
 
 struct SimpleToken : Token<SimpleTokenType>
 {
-    SimpleToken(SimpleTokenType tokenType, int index);
+    SimpleToken(SimpleTokenType tokenType, int index = 0);
     bool operator==(const SimpleToken &token) const;
 };
 
@@ -24,8 +24,8 @@ struct ComplexToken : Token<std::variant<ComplexTokenType, SpecialIdentifierType
 {
     std::string value;
 
-    ComplexToken(ComplexTokenType tokenType, std::string value, int index);
-    ComplexToken(SpecialIdentifierType tokenType, std::string value, int index);
-    ComplexToken(std::variant<ComplexTokenType, SpecialIdentifierType> tokenType, std::string value, int index);
+    ComplexToken(ComplexTokenType tokenType, std::string value, int index = -1);
+    ComplexToken(SpecialIdentifierType tokenType, std::string value, int index = -1);
+    ComplexToken(std::variant<ComplexTokenType, SpecialIdentifierType> tokenType, std::string value, int index = -1);
     bool operator==(const ComplexToken &token) const;
 };

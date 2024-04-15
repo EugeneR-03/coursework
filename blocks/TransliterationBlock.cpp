@@ -56,7 +56,7 @@ SimpleToken TransliterationBlock::TransliterateSymbol(char symbol, int index = 0
 std::vector<SimpleToken> TransliterationBlock::TransliterateString(std::string str)
 {
     std::vector<SimpleToken> tokens;
-    for (unsigned i = 0; i < str.length(); i++) {
+    for (int i = 0; i < str.length(); i++) {
         tokens.push_back(TransliterateSymbol(str[i], i));
     }
     return tokens;

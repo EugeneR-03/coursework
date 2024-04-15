@@ -22,9 +22,6 @@ enum class LexicalBlockState
 // класс реализует алгоритм работы ДКА
 class LexicalBlock
 {
-public:
-    static std::vector<VariableToken> TransliterateSimpleTokenVector(std::vector<VariableToken> tokens);
-    static std::vector<VariableToken> TransliterateString(std::string str);
 private:
     static std::vector<VariableToken> combinedTokenVector;      // итоговый список лексем
 
@@ -55,4 +52,8 @@ private:
     static void ProcessSymbolInState_IDENTIFIER_END(SimpleToken token, std::optional<char> symbol);
     static void ProcessSymbolInState_INTEGER(SimpleToken token, std::optional<char> symbol);
     static void ProcessSymbolDependingOnState(SimpleToken token, std::optional<char> symbol);
+
+public:
+    static std::vector<VariableToken> TransliterateSimpleTokenVector(std::vector<VariableToken> tokens);
+    static std::vector<VariableToken> TransliterateString(std::string str);
 };

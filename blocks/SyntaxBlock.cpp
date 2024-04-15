@@ -2,113 +2,224 @@
 
 using VariableToken = std::variant<SimpleToken, ComplexToken>;
 
-std::stack<VariableToken> SyntaxBlock::tokenStack;
+SyntaxBlockWorkingMode SyntaxBlock::workingMode = SyntaxBlockWorkingMode::UntilFirstError;
 std::vector<VariableToken> SyntaxBlock::tokenVector;
 int SyntaxBlock::currentTokenIndexInVector = 0;
+int SyntaxBlock::stringIndex = 0;
 
-int SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::OpeningParenthesis::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::ClosingParenthesis::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::Comma::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::Colon::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::Semicolon::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::QuotationMark::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::EqualSign::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::ComparisonSign::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::ExclamationMark::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::ArithmeticSign::beginningIndex = -1;
-int SyntaxBlock::CFG::Symbol::LogicalSign::beginningIndex = -1;
+int SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::onErrorOccurs;
 
-int SyntaxBlock::CFG::SpecialIdentifier::Operation::beginningIndex = -1;
-int SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::beginningIndex = -1;
-int SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::beginningIndex = -1;
-int SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::beginningIndex = -1;
-int SyntaxBlock::CFG::SpecialIdentifier::V::beginningIndex = -1;
-int SyntaxBlock::CFG::SpecialIdentifier::No::beginningIndex = -1;
-int SyntaxBlock::CFG::SpecialIdentifier::Real::beginningIndex = -1;
-int SyntaxBlock::CFG::SpecialIdentifier::Solution::beginningIndex = -1;
-int SyntaxBlock::CFG::SpecialIdentifier::Modulus::beginningIndex = -1;
-int SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::beginningIndex = -1;
-int SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::beginningIndex = -1;
+int SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::onErrorOccurs;
 
-int SyntaxBlock::CFG::Variable::beginningIndex = -1;
-int SyntaxBlock::CFG::Variable::Edge::beginningIndex = -1;
-int SyntaxBlock::CFG::Variable::Identifier::beginningIndex = -1;
-int SyntaxBlock::CFG::Variable::Integer::beginningIndex = -1;
+int SyntaxBlock::CFG::Symbol::OpeningParenthesis::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::OpeningParenthesis::onErrorOccurs;
 
-int SyntaxBlock::CFG::Operation::beginningIndex = -1;
-int SyntaxBlock::CFG::Operation::Logical::beginningIndex = -1;
-int SyntaxBlock::CFG::Operation::Arithmetic::beginningIndex = -1;
+int SyntaxBlock::CFG::Symbol::ClosingParenthesis::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::ClosingParenthesis::onErrorOccurs;
 
-int SyntaxBlock::CFG::String::beginningIndex = -1;
-int SyntaxBlock::CFG::String::Beginning::beginningIndex = -1;
-int SyntaxBlock::CFG::String::Logical::beginningIndex = -1;
-int SyntaxBlock::CFG::String::Arithmetic::beginningIndex = -1;
-int SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::beginningIndex = -1;
-int SyntaxBlock::CFG::String::Inner::beginningIndex = -1;
-int SyntaxBlock::CFG::String::Inner::Operation::beginningIndex = -1;
-int SyntaxBlock::CFG::String::Inner::Operand::beginningIndex = -1;
-int SyntaxBlock::CFG::String::Inner::Operand::Unary::beginningIndex = -1;
-int SyntaxBlock::CFG::String::Inner::Operand::Binary::beginningIndex = -1;
-int SyntaxBlock::CFG::String::Inner::Operand::Binary::First::beginningIndex = -1;
-int SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::beginningIndex = -1;
+int SyntaxBlock::CFG::Symbol::Comma::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::Comma::onErrorOccurs;
+
+int SyntaxBlock::CFG::Symbol::Colon::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::Colon::onErrorOccurs;
+
+int SyntaxBlock::CFG::Symbol::Semicolon::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::Semicolon::onErrorOccurs;
+
+int SyntaxBlock::CFG::Symbol::QuotationMark::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::QuotationMark::onErrorOccurs;
+
+int SyntaxBlock::CFG::Symbol::EqualSign::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::EqualSign::onErrorOccurs;
+
+int SyntaxBlock::CFG::Symbol::ComparisonSign::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::ComparisonSign::onErrorOccurs;
+
+int SyntaxBlock::CFG::Symbol::ExclamationMark::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::ExclamationMark::onErrorOccurs;
+
+int SyntaxBlock::CFG::Symbol::ArithmeticSign::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::ArithmeticSign::onErrorOccurs;
+
+int SyntaxBlock::CFG::Symbol::LogicalSign::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::LogicalSign::onErrorOccurs;
+
+int SyntaxBlock::CFG::SpecialIdentifier::Operation::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::Operation::onErrorOccurs;
+
+int SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::onErrorOccurs;
+
+int SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::onErrorOccurs;
+
+int SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::onErrorOccurs;
+
+int SyntaxBlock::CFG::SpecialIdentifier::V::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::V::onErrorOccurs;
+
+int SyntaxBlock::CFG::SpecialIdentifier::No::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::No::onErrorOccurs;
+
+int SyntaxBlock::CFG::SpecialIdentifier::Real::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::Real::onErrorOccurs;
+
+int SyntaxBlock::CFG::SpecialIdentifier::Solution::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::Solution::onErrorOccurs;
+
+int SyntaxBlock::CFG::SpecialIdentifier::Modulus::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::Modulus::onErrorOccurs;
+
+int SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::onErrorOccurs;
+
+int SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::onErrorOccurs;
+
+
+int SyntaxBlock::CFG::Variable::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Variable::onErrorOccurs;
+
+int SyntaxBlock::CFG::Variable::Edge::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Variable::Edge::onErrorOccurs;
+
+int SyntaxBlock::CFG::Variable::Identifier::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Variable::Identifier::onErrorOccurs;
+
+int SyntaxBlock::CFG::Variable::Integer::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Variable::Integer::onErrorOccurs;
+
+int SyntaxBlock::CFG::Operation::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Operation::onErrorOccurs;
+
+int SyntaxBlock::CFG::Operation::Logical::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Operation::Logical::onErrorOccurs;
+
+int SyntaxBlock::CFG::Operation::Arithmetic::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Operation::Arithmetic::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Beginning::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Beginning::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Logical::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Logical::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Arithmetic::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Arithmetic::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Inner::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Inner::Operation::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operation::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Inner::Operand::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Inner::Operand::Variable::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::Variable::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Inner::Operand::Unary::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::Unary::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Inner::Operand::Binary::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::Binary::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Inner::Operand::Binary::First::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::Binary::First::onErrorOccurs;
+
+int SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::beginningIndex;
+boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::onErrorOccurs;
+
+SyntaxBlockWorkingMode SyntaxBlock::GetWorkingMode()
+{
+    return SyntaxBlock::workingMode;
+}
+
+void SyntaxBlock::SetWorkingMode(SyntaxBlockWorkingMode workingMode)
+{
+    SyntaxBlock::workingMode = workingMode;
+}
+
+int SyntaxBlock::GetStringIndex()
+{
+    return SyntaxBlock::stringIndex;
+}
+
+void SyntaxBlock::SetStringIndex(int index)
+{
+    SyntaxBlock::stringIndex = index;
+}
 
 void SyntaxBlock::LoadTokenVector(std::vector<VariableToken> tokenVector)
 {
-    SyntaxBlock::tokenStack = std::stack<VariableToken>();
     SyntaxBlock::tokenVector = tokenVector;
     SyntaxBlock::currentTokenIndexInVector = 0;
 }
 
 void SyntaxBlock::LoadToken()
 {
-    // SyntaxBlock::tokenStack.push(SyntaxBlock::tokenVector[SyntaxBlock::currentTokenIndexInVector++]);
     SyntaxBlock::currentTokenIndexInVector++;
 }
 
 VariableToken SyntaxBlock::GetCurrentToken()
 {
-    // VariableToken token = SyntaxBlock::tokenStack.top();
-    // return token;
     return SyntaxBlock::tokenVector[SyntaxBlock::currentTokenIndexInVector];
 }
 
-// void SyntaxBlock::RemoveTokenFromStack()
-// {
-//     if (SyntaxBlock::tokenStack.empty())
-//     {
-//         return;
-//     }
-//     SyntaxBlock::tokenStack.pop();
-// }
-
-// VariableToken SyntaxBlock::GetAndRemoveTokenFromStack()
-// {
-//     VariableToken token = SyntaxBlock::tokenStack.top();
-//     SyntaxBlock::tokenStack.pop();
-//     return token;
-// }
-
-// void SyntaxBlock::ClearStack()
-// {
-//     SyntaxBlock::tokenStack = std::stack<VariableToken>();
-// }
+int SyntaxBlock::GetCurrentTokenIndex()
+{
+    auto token = SyntaxBlock::GetCurrentToken();
+    if (std::holds_alternative<SimpleToken>(token))
+    {
+        return std::get<SimpleToken>(token).index;
+    }
+    else
+    {
+        return std::get<ComplexToken>(token).index;
+    }
+}
 
 void SyntaxBlock::CancelLoadToken()
 {
-    // SyntaxBlock::RemoveTokenFromStack();
     SyntaxBlock::currentTokenIndexInVector--;
+}
+
+Message SyntaxBlock::MakeMessage(VariableToken token, std::string message)
+{
+    Message fullMessage;
+    if (std::holds_alternative<SimpleToken>(token))
+    {
+        fullMessage = Message(SyntaxBlock::GetStringIndex(), std::get<SimpleToken>(token).index, message);
+    }
+    else
+    {
+        fullMessage = Message(SyntaxBlock::GetStringIndex(), std::get<ComplexToken>(token).index, std::get<ComplexToken>(token).value, message);
+    }
+    return fullMessage;
 }
 
 
 // Symbol
-void SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Cancel()
+void SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["OpeningCurlyBrace"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check()
+bool SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -122,16 +233,20 @@ bool SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::Cancel()
+void SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["ClosingCurlyBrace"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::Check()
+bool SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -145,16 +260,20 @@ bool SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::OpeningParenthesis::Cancel()
+void SyntaxBlock::CFG::Symbol::OpeningParenthesis::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["OpeningParenthesis"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::OpeningParenthesis::Check()
+bool SyntaxBlock::CFG::Symbol::OpeningParenthesis::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -168,16 +287,20 @@ bool SyntaxBlock::CFG::Symbol::OpeningParenthesis::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::ClosingParenthesis::Cancel()
+void SyntaxBlock::CFG::Symbol::ClosingParenthesis::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["ClosingParenthesis"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::ClosingParenthesis::Check()
+bool SyntaxBlock::CFG::Symbol::ClosingParenthesis::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -191,16 +314,20 @@ bool SyntaxBlock::CFG::Symbol::ClosingParenthesis::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::Comma::Cancel()
+void SyntaxBlock::CFG::Symbol::Comma::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["Comma"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::Comma::Check()
+bool SyntaxBlock::CFG::Symbol::Comma::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -214,16 +341,20 @@ bool SyntaxBlock::CFG::Symbol::Comma::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::Colon::Cancel()
+void SyntaxBlock::CFG::Symbol::Colon::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["Colon"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::Colon::Check()
+bool SyntaxBlock::CFG::Symbol::Colon::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -237,16 +368,20 @@ bool SyntaxBlock::CFG::Symbol::Colon::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::Semicolon::Cancel()
+void SyntaxBlock::CFG::Symbol::Semicolon::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["Semicolon"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::Semicolon::Check()
+bool SyntaxBlock::CFG::Symbol::Semicolon::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -260,16 +395,20 @@ bool SyntaxBlock::CFG::Symbol::Semicolon::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::QuotationMark::Cancel()
+void SyntaxBlock::CFG::Symbol::QuotationMark::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["QuotationMark"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::QuotationMark::Check()
+bool SyntaxBlock::CFG::Symbol::QuotationMark::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -283,16 +422,20 @@ bool SyntaxBlock::CFG::Symbol::QuotationMark::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::EqualSign::Cancel()
+void SyntaxBlock::CFG::Symbol::EqualSign::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["EqualSign"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::EqualSign::Check()
+bool SyntaxBlock::CFG::Symbol::EqualSign::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -306,16 +449,20 @@ bool SyntaxBlock::CFG::Symbol::EqualSign::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::ComparisonSign::Cancel()
+void SyntaxBlock::CFG::Symbol::ComparisonSign::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["ComparisonSign"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::ComparisonSign::Check()
+bool SyntaxBlock::CFG::Symbol::ComparisonSign::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -329,16 +476,20 @@ bool SyntaxBlock::CFG::Symbol::ComparisonSign::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::ExclamationMark::Cancel()
+void SyntaxBlock::CFG::Symbol::ExclamationMark::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["ExclamationMark"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::ExclamationMark::Check()
+bool SyntaxBlock::CFG::Symbol::ExclamationMark::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -352,16 +503,20 @@ bool SyntaxBlock::CFG::Symbol::ExclamationMark::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::ArithmeticSign::Cancel()
+void SyntaxBlock::CFG::Symbol::ArithmeticSign::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["ArithmeticSign"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::ArithmeticSign::Check()
+bool SyntaxBlock::CFG::Symbol::ArithmeticSign::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -375,16 +530,20 @@ bool SyntaxBlock::CFG::Symbol::ArithmeticSign::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Symbol::LogicalSign::Cancel()
+void SyntaxBlock::CFG::Symbol::LogicalSign::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Symbol["LogicalSign"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Symbol::LogicalSign::Check()
+bool SyntaxBlock::CFG::Symbol::LogicalSign::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -398,16 +557,20 @@ bool SyntaxBlock::CFG::Symbol::LogicalSign::Check()
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::SpecialIdentifier::Operation::Cancel()
+void SyntaxBlock::CFG::SpecialIdentifier::Operation::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::SpecialIdentifier["Operation"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::SpecialIdentifier::Operation::Check()
+bool SyntaxBlock::CFG::SpecialIdentifier::Operation::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -425,16 +588,20 @@ bool SyntaxBlock::CFG::SpecialIdentifier::Operation::Check()
             }
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::Cancel()
+void SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::SpecialIdentifier["OperandOfUnaryOperation"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::Check()
+bool SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -452,16 +619,20 @@ bool SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::Check()
             }
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::Cancel()
+void SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::SpecialIdentifier["FirstOperandOfBinaryOperation"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::Check()
+bool SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -479,16 +650,20 @@ bool SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::Check()
             }
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::Cancel()
+void SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::SpecialIdentifier["SecondOperandOfBinaryOperation"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::Check()
+bool SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -506,16 +681,20 @@ bool SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::Check(
             }
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::SpecialIdentifier::V::Cancel()
+void SyntaxBlock::CFG::SpecialIdentifier::V::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::SpecialIdentifier["V"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::SpecialIdentifier::V::Check()
+bool SyntaxBlock::CFG::SpecialIdentifier::V::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -533,16 +712,20 @@ bool SyntaxBlock::CFG::SpecialIdentifier::V::Check()
             }
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::SpecialIdentifier::No::Cancel()
+void SyntaxBlock::CFG::SpecialIdentifier::No::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::SpecialIdentifier["No"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::SpecialIdentifier::No::Check()
+bool SyntaxBlock::CFG::SpecialIdentifier::No::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -560,16 +743,20 @@ bool SyntaxBlock::CFG::SpecialIdentifier::No::Check()
             }
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::SpecialIdentifier::Real::Cancel()
+void SyntaxBlock::CFG::SpecialIdentifier::Real::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::SpecialIdentifier["Real"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::SpecialIdentifier::Real::Check()
+bool SyntaxBlock::CFG::SpecialIdentifier::Real::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -587,16 +774,20 @@ bool SyntaxBlock::CFG::SpecialIdentifier::Real::Check()
             }
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::SpecialIdentifier::Solution::Cancel()
+void SyntaxBlock::CFG::SpecialIdentifier::Solution::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::SpecialIdentifier["Solution"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::SpecialIdentifier::Solution::Check()
+bool SyntaxBlock::CFG::SpecialIdentifier::Solution::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -614,16 +805,20 @@ bool SyntaxBlock::CFG::SpecialIdentifier::Solution::Check()
             }
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::SpecialIdentifier::Modulus::Cancel()
+void SyntaxBlock::CFG::SpecialIdentifier::Modulus::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::SpecialIdentifier["Modulus"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::SpecialIdentifier::Modulus::Check()
+bool SyntaxBlock::CFG::SpecialIdentifier::Modulus::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -641,16 +836,20 @@ bool SyntaxBlock::CFG::SpecialIdentifier::Modulus::Check()
             }
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::Cancel()
+void SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::SpecialIdentifier["SquareOfNumber"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::Check()
+bool SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -668,16 +867,20 @@ bool SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::Check()
             }
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::Cancel()
+void SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::SpecialIdentifier["SquareRootOfNumber"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::Check()
+bool SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -695,16 +898,20 @@ bool SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::Check()
             }
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Variable::Identifier::Cancel()
+void SyntaxBlock::CFG::Variable::Identifier::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Variable["Identifier"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Variable::Identifier::Check()
+bool SyntaxBlock::CFG::Variable::Identifier::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
     
@@ -717,23 +924,27 @@ bool SyntaxBlock::CFG::Variable::Identifier::Check()
             ComplexTokenType tokenIdentifierType = std::get<ComplexTokenType>(tokenIdentifier.type);
             if (tokenIdentifierType != ComplexTokenType::Identifier)
             {
-                Cancel();
+                Cancel(isSendingSignal);
                 return false;
             }
         }
         SyntaxBlock::LoadToken();
         return true;
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Variable::Integer::Cancel()
+void SyntaxBlock::CFG::Variable::Integer::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Variable["Integer"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Variable::Integer::Check()
+bool SyntaxBlock::CFG::Variable::Integer::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
@@ -746,49 +957,53 @@ bool SyntaxBlock::CFG::Variable::Integer::Check()
             ComplexTokenType tokenIntegerType = std::get<ComplexTokenType>(tokenInteger.type);
             if (tokenIntegerType != ComplexTokenType::Integer)
             {
-                Cancel();
+                Cancel(isSendingSignal);
                 return false;
             }
             SyntaxBlock::LoadToken();
             return true;
         }
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Variable::Edge::Cancel()
+void SyntaxBlock::CFG::Variable::Edge::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Variable["Edge"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Variable::Edge::Check()
+bool SyntaxBlock::CFG::Variable::Edge::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (!SyntaxBlock::CFG::Variable::Identifier::Check())
+    if (!SyntaxBlock::CFG::Variable::Identifier::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
 
-    if (!SyntaxBlock::CFG::Symbol::OpeningParenthesis::Check())
+    if (!SyntaxBlock::CFG::Symbol::OpeningParenthesis::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
 
-    if (!SyntaxBlock::CFG::Variable::Integer::Check())
+    if (!SyntaxBlock::CFG::Variable::Integer::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
 
-    if (!SyntaxBlock::CFG::Symbol::Comma::Check())
+    if (!SyntaxBlock::CFG::Symbol::Comma::Check(false))
     {
-        if (!SyntaxBlock::CFG::Symbol::ClosingParenthesis::Check())
+        if (!SyntaxBlock::CFG::Symbol::ClosingParenthesis::Check(isSendingSignal))
         {
-            Cancel();
+            Cancel(isSendingSignal);
             return false;
         }
 
@@ -796,15 +1011,15 @@ bool SyntaxBlock::CFG::Variable::Edge::Check()
     }
     else
     {
-        if (!SyntaxBlock::CFG::Variable::Integer::Check())
+        if (!SyntaxBlock::CFG::Variable::Integer::Check(isSendingSignal))
         {
-            Cancel();
+            Cancel(isSendingSignal);
             return false;
         }
 
-        if (!SyntaxBlock::CFG::Symbol::ClosingParenthesis::Check())
+        if (!SyntaxBlock::CFG::Symbol::ClosingParenthesis::Check(isSendingSignal))
         {
-            Cancel();
+            Cancel(isSendingSignal);
             return false;
         }
 
@@ -812,654 +1027,794 @@ bool SyntaxBlock::CFG::Variable::Edge::Check()
     }
 }
 
-void SyntaxBlock::CFG::Variable::Cancel()
+void SyntaxBlock::CFG::Variable::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Variable["Variable"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Variable::Check()
+bool SyntaxBlock::CFG::Variable::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (SyntaxBlock::CFG::Variable::Edge::Check())
+    if (SyntaxBlock::CFG::Variable::Edge::Check(false))
     {
         return true;
     }
-    else if (SyntaxBlock::CFG::Variable::Identifier::Check())
+    else if (SyntaxBlock::CFG::Variable::Identifier::Check(false))
     {
         return true;
     }
-    else if (SyntaxBlock::CFG::Variable::Integer::Check())
+    else if (SyntaxBlock::CFG::Variable::Integer::Check(false))
     {
         return true;
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Operation::Logical::Cancel()
+void SyntaxBlock::CFG::Operation::Logical::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Operation["Logical"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Operation::Logical::Check()
+bool SyntaxBlock::CFG::Operation::Logical::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (SyntaxBlock::CFG::Symbol::ExclamationMark::Check())
+    if (SyntaxBlock::CFG::Symbol::ExclamationMark::Check(false))
     {
-        if (SyntaxBlock::CFG::Symbol::EqualSign::Check())
+        if (SyntaxBlock::CFG::Symbol::EqualSign::Check(false))
         {
             return true;
         }
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    else if (SyntaxBlock::CFG::Symbol::EqualSign::Check())
+    else if (SyntaxBlock::CFG::Symbol::EqualSign::Check(false))
     {
-        if (SyntaxBlock::CFG::Symbol::EqualSign::Check())
+        if (SyntaxBlock::CFG::Symbol::EqualSign::Check(false))
         {
             return true;
         }
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    else if (SyntaxBlock::CFG::Symbol::ComparisonSign::Check())
+    else if (SyntaxBlock::CFG::Symbol::ComparisonSign::Check(false))
     {
-        if (SyntaxBlock::CFG::Symbol::EqualSign::Check())
+        if (SyntaxBlock::CFG::Symbol::EqualSign::Check(false))
         {
             return true;
         }
         return true;
     }
-    else if (SyntaxBlock::CFG::Symbol::LogicalSign::Check())
+    else if (SyntaxBlock::CFG::Symbol::LogicalSign::Check(false))
     {
         return true;
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Operation::Arithmetic::Cancel()
+void SyntaxBlock::CFG::Operation::Arithmetic::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Operation["Arithmetic"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Operation::Arithmetic::Check()
+bool SyntaxBlock::CFG::Operation::Arithmetic::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (SyntaxBlock::CFG::Symbol::ArithmeticSign::Check())
+    if (SyntaxBlock::CFG::Symbol::ArithmeticSign::Check(false))
     {
         return true;
     }
-    if (SyntaxBlock::CFG::SpecialIdentifier::Modulus::Check())
+    if (SyntaxBlock::CFG::SpecialIdentifier::Modulus::Check(false))
     {
         return true;
     }
-    if (SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::Check())
+    if (SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::Check(false))
     {
         return true;
     }
-    if (SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::Check())
+    if (SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::Check(false))
     {
         return true;
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::Operation::Cancel()
+void SyntaxBlock::CFG::Operation::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::Operation["Operation"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::Operation::Check()
+bool SyntaxBlock::CFG::Operation::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (SyntaxBlock::CFG::Operation::Logical::Check())
+    if (SyntaxBlock::CFG::Operation::Logical::Check(false))
     {
         return true;
     }
-    else if (SyntaxBlock::CFG::Operation::Arithmetic::Check())
+    if (SyntaxBlock::CFG::Operation::Arithmetic::Check(false))
     {
         return true;
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::String::Beginning::Cancel()
+void SyntaxBlock::CFG::String::Beginning::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::String["Beginning"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::String::Beginning::Check()
+bool SyntaxBlock::CFG::String::Beginning::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (SyntaxBlock::CFG::Variable::Edge::Check())
+    if (SyntaxBlock::CFG::Variable::Edge::Check(false))
     {
         return true;
     }
-    else if (SyntaxBlock::CFG::Variable::Identifier::Check())
+    if (SyntaxBlock::CFG::Variable::Identifier::Check(false))
     {
         return true;
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::String::Inner::Operation::Cancel()
+void SyntaxBlock::CFG::String::Inner::Operation::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::StringInner["Operation"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::String::Inner::Operation::Check()
+bool SyntaxBlock::CFG::String::Inner::Operation::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::SpecialIdentifier::Operation::Check())
+    if (!SyntaxBlock::CFG::SpecialIdentifier::Operation::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::Colon::Check())
+    if (!SyntaxBlock::CFG::Symbol::Colon::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Operation::Check())
+    if (!SyntaxBlock::CFG::Operation::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
     return true;
 }
 
-void SyntaxBlock::CFG::String::Inner::Operand::Unary::Cancel()
+void SyntaxBlock::CFG::String::Inner::Operand::Unary::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::StringInner["OperandUnary"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::String::Inner::Operand::Unary::Check()
+bool SyntaxBlock::CFG::String::Inner::Operand::Unary::Check(bool isSendingSignal, bool isCheckingInner)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::Check())
+    if (!SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::Colon::Check())
+    if (!SyntaxBlock::CFG::Symbol::Colon::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (SyntaxBlock::CFG::String::Inner::Check())
+    if (SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check(false))
     {
-        // Cancel();
+        SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Cancel(false);
+        if (!isCheckingInner)
+        {
+            return true;
+        }
+        if (!SyntaxBlock::CFG::String::Inner::Check(isSendingSignal))
+        {
+            Cancel(isSendingSignal);
+            return false;
+        }
         return true;
     }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Variable::Check())
+    if (!SyntaxBlock::CFG::Variable::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
-        return false;
-    }
-    // if (SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    // {
-    //     if (!SyntaxBlock::CFG::Variable::Check())
-    //     {
-    //         Cancel();
-    //         return false;
-    //     }
-    //     if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    //     {
-    //         Cancel();
-    //         return false;
-    //     }
-    // }
-    // else
-    // {
-    //     if (!SyntaxBlock::CFG::String::Inner::Check())
-    //     {
-    //         Cancel();
-    //         return false;
-    //     }
-    // }
-    return true;
-}
-
-void SyntaxBlock::CFG::String::Inner::Operand::Binary::First::Cancel()
-{
-    SyntaxBlock::currentTokenIndexInVector = beginningIndex;
-}
-
-bool SyntaxBlock::CFG::String::Inner::Operand::Binary::First::Check()
-{
-    beginningIndex = SyntaxBlock::currentTokenIndexInVector;
-
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    {
-        Cancel();
-        return false;
-    }
-    if (!SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::Check())
-    {
-        Cancel();
-        return false;
-    }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    {
-        Cancel();
-        return false;
-    }
-    if (!SyntaxBlock::CFG::Symbol::Colon::Check())
-    {
-        Cancel();
-        return false;
-    }
-    auto bb = SyntaxBlock::currentTokenIndexInVector;
-    if (SyntaxBlock::CFG::String::Inner::Check())
-    {
-        // Cancel();
-        return true;
-    }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    {
-        Cancel();
-        return false;
-    }
-    if (!SyntaxBlock::CFG::Variable::Check())
-    {
-        Cancel();
-        return false;
-    }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    {
-        Cancel();
-        return false;
-    }
-    // else
-    // {
-    //     if (!SyntaxBlock::CFG::String::Inner::Check())
-    //     {
-    //         Cancel();
-    //         return false;
-    //     }
-    // }
-    return true;
-}
-
-void SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::Cancel()
-{
-    SyntaxBlock::currentTokenIndexInVector = beginningIndex;
-}
-
-bool SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::Check()
-{
-    beginningIndex = SyntaxBlock::currentTokenIndexInVector;
-
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    {
-        Cancel();
-        return false;
-    }
-    if (!SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::Check())
-    {
-        Cancel();
-        return false;
-    }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    {
-        Cancel();
-        return false;
-    }
-    if (!SyntaxBlock::CFG::Symbol::Colon::Check())
-    {
-        Cancel();
-        return false;
-    }
-    // if (SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    // {
-    //     if (!SyntaxBlock::CFG::Variable::Check())
-    //     {
-    //         Cancel();
-    //         return false;
-    //     }
-    //     if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    //     {
-    //         Cancel();
-    //         return false;
-    //     }
-    // }
-    // else
-    // {
-    //     if (!SyntaxBlock::CFG::String::Inner::Check())
-    //     {
-    //         Cancel();
-    //         return false;
-    //     }
-    // }
-
-    if (SyntaxBlock::CFG::String::Inner::Check())
-    {
-        // Cancel();
-        return true;
-    }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    {
-        Cancel();
-        return false;
-    }
-    if (!SyntaxBlock::CFG::Variable::Check())
-    {
-        Cancel();
-        return false;
-    }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
-    {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
     return true;
 }
 
-void SyntaxBlock::CFG::String::Inner::Operand::Binary::Cancel()
+void SyntaxBlock::CFG::String::Inner::Operand::Binary::First::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::StringInner["FirstOperandOfBinaryOperation"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::String::Inner::Operand::Binary::Check()
+bool SyntaxBlock::CFG::String::Inner::Operand::Binary::First::Check(bool isSendingSignal, bool isCheckingInner)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (!SyntaxBlock::CFG::String::Inner::Operand::Binary::First::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::Comma::Check())
+    if (!SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (!SyntaxBlock::CFG::Symbol::Colon::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check(false))
+    {
+        SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Cancel(false);
+        if (!isCheckingInner)
+        {
+            return true;
+        }
+        if (!SyntaxBlock::CFG::String::Inner::Check(isSendingSignal))
+        {
+            Cancel(isSendingSignal);
+            return false;
+        }
+        return true;
+    }
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (!SyntaxBlock::CFG::Variable::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
         return false;
     }
     return true;
 }
 
-void SyntaxBlock::CFG::String::Inner::Operand::Cancel()
+void SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::StringInner["SecondOperandOfBinaryOperation"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::String::Inner::Operand::Check()
+bool SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::Check(bool isSendingSignal, bool isCheckingInner)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (SyntaxBlock::CFG::String::Inner::Operand::Unary::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (!SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (!SyntaxBlock::CFG::Symbol::Colon::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check(false))
+    {
+        SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Cancel(false);
+        if (!isCheckingInner)
+        {
+            return true;
+        }
+        if (!SyntaxBlock::CFG::String::Inner::Check(isSendingSignal))
+        {
+            Cancel(isSendingSignal);
+            return false;
+        }
+        return true;
+    }
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (!SyntaxBlock::CFG::Variable::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    return true;
+}
+
+void SyntaxBlock::CFG::String::Inner::Operand::Binary::Cancel(bool isSendingSignal)
+{
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::StringInner["OperandBinary"]));
+    }
+    SyntaxBlock::currentTokenIndexInVector = beginningIndex;
+}
+
+bool SyntaxBlock::CFG::String::Inner::Operand::Binary::Check(bool isSendingSignal, bool isCheckingInner)
+{
+    beginningIndex = SyntaxBlock::currentTokenIndexInVector;
+
+    if (!SyntaxBlock::CFG::String::Inner::Operand::Binary::First::Check(isSendingSignal, isCheckingInner))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (!SyntaxBlock::CFG::Symbol::Comma::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    if (!SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::Check(isSendingSignal, isCheckingInner))
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
+    return true;
+}
+
+void SyntaxBlock::CFG::String::Inner::Operand::Variable::Cancel(bool isSendingSignal)
+{
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::StringInner["OperandVariable"]));
+    }
+    SyntaxBlock::currentTokenIndexInVector = beginningIndex;
+}
+
+bool SyntaxBlock::CFG::String::Inner::Operand::Variable::Check(bool isSendingSignal, bool isCheckingInner)
+{
+    beginningIndex = SyntaxBlock::currentTokenIndexInVector;
+
+    if (SyntaxBlock::CFG::String::Inner::Operand::Unary::Check(false, isCheckingInner))
     {
         return true;
     }
-    if (SyntaxBlock::CFG::String::Inner::Operand::Binary::Check())
+    if (SyntaxBlock::CFG::String::Inner::Operand::Binary::First::Check(false, isCheckingInner))
     {
         return true;
     }
-    Cancel();
+    if (SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::Check(false, isCheckingInner))
+    {
+        return true;
+    }
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::String::Inner::Cancel()
+void SyntaxBlock::CFG::String::Inner::Operand::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::StringInner["Operand"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::String::Inner::Check()
+bool SyntaxBlock::CFG::String::Inner::Operand::Check(bool isSendingSignal, bool isCheckingInner)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (!SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check())
+    if (SyntaxBlock::CFG::String::Inner::Operand::Unary::Check(false, isCheckingInner))
     {
-        Cancel();
+        return true;
+    }
+    if (SyntaxBlock::CFG::String::Inner::Operand::Binary::Check(false, isCheckingInner))
+    {
+        return true;
+    }
+    Cancel(isSendingSignal);
+    return false;
+}
+
+void SyntaxBlock::CFG::String::Inner::Cancel(bool isSendingSignal)
+{
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::StringInner["Inner"]));
+    }
+    SyntaxBlock::currentTokenIndexInVector = beginningIndex;
+}
+
+bool SyntaxBlock::CFG::String::Inner::Check(bool isSendingSignal)
+{
+    beginningIndex = SyntaxBlock::currentTokenIndexInVector;
+
+    if (!SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check(isSendingSignal))
+    {
+        Cancel(isSendingSignal);
         return false;
     }
-    auto buf1 = SyntaxBlock::currentTokenIndexInVector;
-    if (!SyntaxBlock::CFG::String::Inner::Operation::Check())
+    if (!SyntaxBlock::CFG::String::Inner::Operation::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    auto buf2 = SyntaxBlock::currentTokenIndexInVector;
-    if (!SyntaxBlock::CFG::Symbol::Comma::Check())
+    if (!SyntaxBlock::CFG::Symbol::Comma::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    auto buf3 = SyntaxBlock::currentTokenIndexInVector;
-    if (!SyntaxBlock::CFG::String::Inner::Operand::Check())
+    if (!SyntaxBlock::CFG::String::Inner::Operand::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    auto buf4 = SyntaxBlock::currentTokenIndexInVector;
-    if (!SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::Check())
+    if (!SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
     return true;
 }
 
-void SyntaxBlock::CFG::String::Logical::Cancel()
+void SyntaxBlock::CFG::String::Logical::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::String["Logical"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::String::Logical::Check()
+bool SyntaxBlock::CFG::String::Logical::Check(bool isSendingSignal, bool isCheckingInner)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (SyntaxBlock::CFG::String::Inner::Check())
+    if (SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check(false))
     {
+        SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Cancel(false);
+        if (!isCheckingInner)
+        {
+            return true;
+        }
+        if (!SyntaxBlock::CFG::String::Inner::Check(isSendingSignal))
+        {
+            Cancel(isSendingSignal);
+            return false;
+        }
         return true;
     }
 
     // если нет логической части (то есть вид `[...]=;[...]`), проверяем, есть ли впереди знак `;` и возвращаемся обратно
-    if (SyntaxBlock::CFG::Symbol::Semicolon::Check())
+    if (SyntaxBlock::CFG::Symbol::Semicolon::Check(false))
     {
-        Cancel();
+        Cancel(false);
         return true;
     }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::String::Arithmetic::Cancel()
+void SyntaxBlock::CFG::String::Arithmetic::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::String["Arithmetic"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::String::Arithmetic::Check()
+bool SyntaxBlock::CFG::String::Arithmetic::Check(bool isSendingSignal, bool isCheckingInner)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::Check())
+    if (SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::Check(false))
     {
         return true;
     }
     
-    if (SyntaxBlock::CFG::String::Inner::Check())
+    if (SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check(false))
+    {
+        SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Cancel(false);
+        if (!isCheckingInner)
+        {
+            return true;
+        }
+        if (!SyntaxBlock::CFG::String::Inner::Check(isSendingSignal))
+        {
+            Cancel(isSendingSignal);
+            return false;
+        }
+        return true;
+    }
+    if (SyntaxBlock::CFG::Variable::Integer::Check(false))
     {
         return true;
     }
-    if (SyntaxBlock::CFG::Variable::Integer::Check())
+    if (SyntaxBlock::CFG::Variable::Edge::Check(false))
     {
         return true;
     }
-    if (SyntaxBlock::CFG::Variable::Edge::Check())
-    {
-        return true;
-    }
-    Cancel();
+    Cancel(isSendingSignal);
     return false;
 }
 
-void SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::Cancel()
+void SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::String["ArithmeticNoRealSolution"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::Check()
+bool SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
-    auto buf = beginningIndex;
 
-    if (!SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check())
+    if (!SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::SpecialIdentifier::V::Check())
+    if (!SyntaxBlock::CFG::SpecialIdentifier::V::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::Colon::Check())
+    if (!SyntaxBlock::CFG::Symbol::Colon::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::SpecialIdentifier::No::Check())
+    if (!SyntaxBlock::CFG::SpecialIdentifier::No::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::SpecialIdentifier::Real::Check())
+    if (!SyntaxBlock::CFG::SpecialIdentifier::Real::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::SpecialIdentifier::Solution::Check())
+    if (!SyntaxBlock::CFG::SpecialIdentifier::Solution::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check())
+    if (!SyntaxBlock::CFG::Symbol::QuotationMark::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::Check())
+    if (!SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
     
     return true;
 }
 
-void SyntaxBlock::CFG::String::Cancel()
+void SyntaxBlock::CFG::String::Cancel(bool isSendingSignal)
 {
+    if (isSendingSignal)
+    {
+        onErrorOccurs(SyntaxBlock::MakeMessage(SyntaxBlock::GetCurrentToken(), MessagePool::String["String"]));
+    }
     SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
 
-bool SyntaxBlock::CFG::String::Check()
+bool SyntaxBlock::CFG::String::Check(bool isSendingSignal)
 {
     beginningIndex = SyntaxBlock::currentTokenIndexInVector;
 
-    if (!SyntaxBlock::CFG::String::Beginning::Check())
+    if (!SyntaxBlock::CFG::String::Beginning::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::Symbol::EqualSign::Check())
+    if (!SyntaxBlock::CFG::Symbol::EqualSign::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::String::Logical::Check())
+    if (!SyntaxBlock::CFG::String::Logical::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    auto buf1 = SyntaxBlock::currentTokenIndexInVector;
-    if (!SyntaxBlock::CFG::Symbol::Semicolon::Check())
+    if (!SyntaxBlock::CFG::Symbol::Semicolon::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    if (!SyntaxBlock::CFG::String::Arithmetic::Check())
+    if (!SyntaxBlock::CFG::String::Arithmetic::Check(isSendingSignal))
     {
-        Cancel();
+        Cancel(isSendingSignal);
         return false;
     }
-    auto buf2 = SyntaxBlock::currentTokenIndexInVector;
+    if (SyntaxBlock::currentTokenIndexInVector != SyntaxBlock::tokenVector.size())
+    {
+        Cancel(isSendingSignal);
+        return false;
+    }
 
-    // if (!SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::Check())
-    // {
-    //     // return true;
-    //     Cancel();
-    //     return false;
-    // }
     return true;
+}
+
+void SyntaxBlock::CFG::String::CheckAllInnerParts(bool isSendingSignal, bool isCheckingInner)
+{
+    beginningIndex = SyntaxBlock::currentTokenIndexInVector;
+    for (int currentIndex = beginningIndex; currentIndex < SyntaxBlock::tokenVector.size(); currentIndex++)
+    {
+        SyntaxBlock::currentTokenIndexInVector = currentIndex;
+        if (SyntaxBlock::CFG::Symbol::EqualSign::Check(false))
+        {
+            if (SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check(false))
+            {
+                SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Cancel(false);
+                SyntaxBlock::CFG::String::Logical::Check(isSendingSignal, isCheckingInner);
+            }
+        }
+        else if (SyntaxBlock::CFG::Symbol::Semicolon::Check(false))
+        {
+            SyntaxBlock::CFG::String::Arithmetic::Check(isSendingSignal, isCheckingInner);
+        }
+        // проверка граней (Edge)
+        else if (SyntaxBlock::CFG::Variable::Identifier::Check(false))
+        {
+            if (SyntaxBlock::CFG::Symbol::OpeningParenthesis::Check(false))
+            {
+                SyntaxBlock::CFG::Symbol::OpeningParenthesis::Cancel(false);
+                SyntaxBlock::CFG::Variable::Identifier::Cancel(false);
+                
+                if (SyntaxBlock::CFG::Variable::Edge::Check(isSendingSignal))
+                {
+                    currentIndex = SyntaxBlock::currentTokenIndexInVector-1;
+                }
+            }
+        }
+        // проверка операций (Operation)
+        else if (SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Check(false))
+        {
+            if (SyntaxBlock::CFG::String::Inner::Operation::Check(isSendingSignal))
+            {
+                currentIndex = SyntaxBlock::currentTokenIndexInVector-1;
+            }
+        }
+        // проверка операндов (Operand)
+        else if (SyntaxBlock::CFG::Symbol::Comma::Check(false))
+        {
+            
+            // проверяем на кавычки, т. к. запятые могут встречаться в гранях (Edge)
+            if (SyntaxBlock::CFG::Symbol::QuotationMark::Check(false))
+            {
+                SyntaxBlock::CFG::Symbol::QuotationMark::Cancel(false);
+
+                if (SyntaxBlock::CFG::String::Inner::Operand::Variable::Check(isSendingSignal, isCheckingInner))
+                {
+                    currentIndex = SyntaxBlock::currentTokenIndexInVector-1;
+                }
+            }
+        }
+        
+    }
+    SyntaxBlock::currentTokenIndexInVector = beginningIndex;
 }
