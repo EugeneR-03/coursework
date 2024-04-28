@@ -23,37 +23,38 @@ enum class LexicalBlockState
 class LexicalBlock
 {
 private:
-    static std::vector<VariableToken> combinedTokenVector;      // итоговый список лексем
+    std::vector<VariableToken> combinedTokenVector;      // итоговый список лексем
 
-    static LexicalBlockState state;     // состояние автомата
-    static void SwitchState(LexicalBlockState newState);
+    LexicalBlockState state;     // состояние автомата
+    void SwitchState(LexicalBlockState newState);
 
-    static void Process(VariableToken token, std::optional<char> symbol);
+    void Process(const VariableToken& token, std::optional<char> symbol);
     // сложные (составные) лексемы
-    static void StartIdentifier(SimpleToken token, char symbol);
-    static void StartInteger(SimpleToken token, char symbol);
+    void StartIdentifier(SimpleToken& token, char symbol);
+    void StartInteger(SimpleToken& token, char symbol);
     // простые (односимвольные) лексемы
-    static void StartArithmeticSign(SimpleToken token);
-    static void StartComparisonSign(SimpleToken token);
-    static void StartLogicalSign(SimpleToken token);
-    static void StartExclamationMark(SimpleToken token);
-    static void StartEqualSign(SimpleToken token);
-    static void StartOpeningCurlyBrace(SimpleToken token);
-    static void StartClosingCurlyBrace(SimpleToken token);
-    static void StartOpeningParenthesis(SimpleToken token);
-    static void StartClosingParenthesis(SimpleToken token);
-    static void StartComma(SimpleToken token);
-    static void StartColon(SimpleToken token);
-    static void StartSemicolon(SimpleToken token);
-    static void StartQuotationMark(SimpleToken token);
+    void StartArithmeticSign(SimpleToken& token);
+    void StartComparisonSign(SimpleToken& token);
+    void StartLogicalSign(SimpleToken& token);
+    void StartExclamationMark(SimpleToken& token);
+    void StartEqualSign(SimpleToken& token);
+    void StartOpeningCurlyBrace(SimpleToken& token);
+    void StartClosingCurlyBrace(SimpleToken& token);
+    void StartOpeningParenthesis(SimpleToken& token);
+    void StartClosingParenthesis(SimpleToken& token);
+    void StartComma(SimpleToken& token);
+    void StartColon(SimpleToken& token);
+    void StartSemicolon(SimpleToken& token);
+    void StartQuotationMark(SimpleToken& token);
     
-    static void ProcessSymbolInState_SPACE(SimpleToken token, std::optional<char> symbol);
-    static void ProcessSymbolInState_IDENTIFIER_BEGIN(SimpleToken token, std::optional<char> symbol);
-    static void ProcessSymbolInState_IDENTIFIER_END(SimpleToken token, std::optional<char> symbol);
-    static void ProcessSymbolInState_INTEGER(SimpleToken token, std::optional<char> symbol);
-    static void ProcessSymbolDependingOnState(SimpleToken token, std::optional<char> symbol);
+    void ProcessSymbolInState_SPACE(SimpleToken& token, std::optional<char> symbol);
+    void ProcessSymbolInState_IDENTIFIER_BEGIN(SimpleToken& token, std::optional<char> symbol);
+    void ProcessSymbolInState_IDENTIFIER_END(SimpleToken& token, std::optional<char> symbol);
+    void ProcessSymbolInState_INTEGER(SimpleToken& token, std::optional<char> symbol);
+    void ProcessSymbolDependingOnState(SimpleToken& token, std::optional<char> symbol);
 
 public:
-    static std::vector<VariableToken> TransliterateSimpleTokenVector(std::vector<VariableToken> tokens);
-    static std::vector<VariableToken> TransliterateString(std::string str);
+    LexicalBlock();
+    std::vector<VariableToken> TransliterateSimpleTokenVector(std::vector<VariableToken>& tokens);
+    std::vector<VariableToken> TransliterateString(const std::string& str);
 };

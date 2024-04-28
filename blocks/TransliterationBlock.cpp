@@ -1,5 +1,7 @@
 #include "TransliterationBlock.hpp"
 
+TransliterationBlock::TransliterationBlock() {}
+
 SimpleToken TransliterationBlock::TransliterateSymbol(char symbol, int index = 0)
 {
     // проверка, является ли символ буквой
@@ -53,7 +55,7 @@ SimpleToken TransliterationBlock::TransliterateSymbol(char symbol, int index = 0
     }
 }
 
-std::vector<SimpleToken> TransliterationBlock::TransliterateString(std::string str)
+std::vector<SimpleToken> TransliterationBlock::TransliterateString(const std::string& str)
 {
     std::vector<SimpleToken> tokens;
     for (int i = 0; i < str.length(); i++) {

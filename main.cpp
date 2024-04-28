@@ -1,6 +1,4 @@
-#include "./blocks/TransliterationBlock.hpp"
-#include "./blocks/LexicalBlock.hpp"
-#include "./blocks/SyntaxBlock.hpp"
+#include "./blocks/MainBlock.hpp"
 #include "Debugger.hpp"
 #include <iostream>
 #include <fstream>
@@ -8,6 +6,10 @@
 #include <string>
 #include <vector>
 #include "json.hpp"
+
+#include <chrono>
+#include <thread>
+#include <future>
 
 // using namespace std::string_literals;
 
@@ -77,7 +79,7 @@ struct Settings
     }
 };
 
-void ConnectEvents(int& stringIndex, std::vector<std::vector<Message>>& messages)
+void ConnectEvents(std::vector<std::vector<Message>>& messages)
 {
     SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
     SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
@@ -117,82 +119,34 @@ void ConnectEvents(int& stringIndex, std::vector<std::vector<Message>>& messages
     SyntaxBlock::CFG::String::Inner::Operand::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
 }
 
-bool CheckString(std::string str, SyntaxBlockWorkingMode workingMode)
-{
-    std::vector<std::variant<SimpleToken, ComplexToken>> combinedTokens = LexicalBlock::TransliterateString(str);
-    SyntaxBlock::LoadTokenVector(combinedTokens);
-    
-    if (SyntaxBlock::GetWorkingMode() != workingMode)
-    {
-        SyntaxBlock::SetWorkingMode(workingMode);
-    }
-    if (workingMode == SyntaxBlockWorkingMode::AllErrorsWithoutInner)
-    {
-        SyntaxBlock::CFG::String::CheckAllInnerParts(true, false);
-    }
-    else if (workingMode == SyntaxBlockWorkingMode::AllErrors)
-    {
-        SyntaxBlock::CFG::String::CheckAllInnerParts(true, true);
-    }
-    if (workingMode == SyntaxBlockWorkingMode::UntilFirstError)
-    {
-        return SyntaxBlock::CFG::String::Check(true);
-    }
-    else
-    {
-        return SyntaxBlock::CFG::String::Check(false);
-    }
-    return false;
-}
-
-bool CheckString(int stringIndex, std::string str, SyntaxBlockWorkingMode workingMode)
-{
-    SyntaxBlock::SetStringIndex(stringIndex);
-    return CheckString(str, workingMode);
-}
-
 int main(int argc, char* argv[])
 {
     Settings settings("config.json");
 
     std::vector<std::string> strings = ReadStringsFromFile(settings.inputFilePath);
     int stringsCount = strings.size();
-    // std::string targetString = strings[0];
-
-    std::ofstream outputFile;
 
     if (settings.debugMode == DebuggerWorkingMode::None)
     {
         return 0;
     }
 
-    outputFile.open(settings.outputFilePath);
-    if (!outputFile.is_open()) {
-        std::cerr << "Failed to open output file" << std::endl;
-        return 1;
-    }
-
-    // std::vector<std::variant<SimpleToken, ComplexToken>> combinedTokens = LexicalBlock::TransliterateString(targetString);
-
     std::vector<std::vector<Message>> messages = std::vector<std::vector<Message>>(stringsCount);
     std::vector<bool> results = std::vector<bool>(stringsCount);
 
-    int stringIndex = 0;
-    ConnectEvents(stringIndex, messages);
+    ConnectEvents(messages);
     
-    SyntaxBlock::SetWorkingMode(settings.errorsMode);
+    auto start = std::chrono::steady_clock::now();
     
-    for (stringIndex = 0; stringIndex < stringsCount; stringIndex++)
+    #pragma omp parallel for
+    for (int stringIndex = 0; stringIndex < stringsCount; stringIndex++)
     {
-        results[stringIndex] = CheckString(stringIndex, strings[stringIndex], settings.errorsMode);
-
-        // if (settings.debugMode == DebuggerWorkingMode::Verbose)
-        // {
-        //     outputFile << strings[stringIndex] << std::endl;
-        //     outputFile << std::endl;
-        //     Debugger::PrintTokens(outputFile, strings[stringIndex], combinedTokens);
-        //     outputFile << std::endl;
-        // }
+        MainBlock mainBlock = MainBlock(settings.errorsMode);
+        bool result = mainBlock.CheckString(stringIndex, strings[stringIndex], settings.errorsMode);
+        #pragma omp critical
+        {
+        results[stringIndex] = result;
+        }
     }
 
     for (int i = 0; i < messages.size(); i++)
@@ -204,6 +158,16 @@ int main(int argc, char* argv[])
             });
     }
 
+    auto end = std::chrono::steady_clock::now();
+
+    std::cout << "Time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
+
+    std::ofstream outputFile;
+    outputFile.open(settings.outputFilePath);
+    if (!outputFile.is_open()) {
+        std::cerr << "Failed to open output file" << std::endl;
+        return 1;
+    }
 
     Debugger::PrintMessagesAndResults(outputFile, messages, results);
 

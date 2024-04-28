@@ -4,17 +4,25 @@
 
 int Message::currentId = 0;
 
-Message::Message() {}
+Message::Message()
+{
+    this->id = ++currentId;
+    this->stringIndex = -1;
+    this->tokenIndex = -1;
+    this->tokenValue = "";
+    this->message = "";
+}
 
-Message::Message(int stringIndex, int tokenIndex, std::string message)
+Message::Message(int stringIndex, int tokenIndex, const std::string& message)
 {
     this->id = ++currentId;
     this->stringIndex = stringIndex;
     this->tokenIndex = tokenIndex;
+    this->tokenValue = "";
     this->message = message;
 }
 
-Message::Message(int stringIndex, int tokenIndex, std::string tokenValue, std::string message)
+Message::Message(int stringIndex, int tokenIndex, const std::string& tokenValue, const std::string& message)
 {
     this->id = ++currentId;
     this->stringIndex = stringIndex;

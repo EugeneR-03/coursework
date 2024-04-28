@@ -7,6 +7,7 @@
 class TransliterationBlock
 {
 public:
-    static SimpleToken TransliterateSymbol(char symbol, int index);
-    static std::vector<SimpleToken> TransliterateString(std::string str);
+    TransliterationBlock();
+    SimpleToken TransliterateSymbol(char symbol, int index);
+    std::vector<SimpleToken> TransliterateString(const std::string& str);
 };

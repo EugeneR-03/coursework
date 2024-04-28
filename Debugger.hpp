@@ -22,8 +22,8 @@ class Debugger
     static const char* complexTokenTypes[];
     static const char* specialIdentifierTypes[];
 public:
-    static void AddMessageToVector(Message message, std::vector<std::vector<Message>>& messages);
-    static void PrintMessage(std::ofstream& file, Message message);
-    static void PrintMessagesAndResults(std::ofstream& file, std::vector<std::vector<Message>> messages, std::vector<bool> results);
-    static void PrintTokens(std::ofstream& file, std::string targetString, std::vector<VariableToken> combinedTokens);
+    static void AddMessageToVector(const Message& message, std::vector<std::vector<Message>>& messages);
+    static void PrintMessage(std::ofstream& file, const Message& message);
+    static void PrintMessagesAndResults(std::ofstream& file, std::vector<std::vector<Message>>& messages, std::vector<bool>& results);
+    static void PrintTokens(std::ofstream& file, const std::string& targetString, const std::vector<VariableToken>& combinedTokens);
 };

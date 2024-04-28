@@ -1,20 +1,26 @@
 #include "LexicalBlock.hpp"
 
 // начальное значение
-LexicalBlockState LexicalBlock::state = LexicalBlockState::SPACE;
+// LexicalBlockState LexicalBlock::state = LexicalBlockState::SPACE;
 
-std::vector<VariableToken> LexicalBlock::combinedTokenVector;
+// std::vector<VariableToken> LexicalBlock::combinedTokenVector;
+
+LexicalBlock::LexicalBlock()
+{
+    this->state = LexicalBlockState::SPACE;
+}
 
 void LexicalBlock::SwitchState(LexicalBlockState newState)
 {
-    LexicalBlock::state = newState;
+    this->state = newState;
 }
 
-void LexicalBlock::Process(VariableToken token, std::optional<char> symbol = std::nullopt)
+void LexicalBlock::Process(const VariableToken& token, std::optional<char> symbol = std::nullopt)
 {
     if (std::holds_alternative<ComplexToken>(combinedTokenVector[combinedTokenVector.size() - 2]))
     {
-        SpecialIdentifierBlock::TryChangeIdentifierTypeToSpecial(std::get<ComplexToken>(combinedTokenVector[combinedTokenVector.size() - 2]));
+        SpecialIdentifierBlock specialIdentifierBlock = SpecialIdentifierBlock();
+        specialIdentifierBlock.TryChangeIdentifierTypeToSpecial(std::get<ComplexToken>(combinedTokenVector[combinedTokenVector.size() - 2]));
     }
     if (!symbol.has_value())
         return;
@@ -28,195 +34,197 @@ void LexicalBlock::Process(VariableToken token, std::optional<char> symbol = std
     return;
 }
 
-void LexicalBlock::StartIdentifier(SimpleToken token, char symbol)
+void LexicalBlock::StartIdentifier(SimpleToken& token, char symbol)
 {
     if (token.type != SimpleTokenType::Letter)
         throw std::invalid_argument("Invalid identifier");
 
-    LexicalBlock::combinedTokenVector.push_back(ComplexToken(ComplexTokenType::Identifier, "", token.index));
-    LexicalBlock::Process(token, symbol);
+    std::string value = "";
+    this->combinedTokenVector.push_back(ComplexToken(ComplexTokenType::Identifier, value, token.index));
+    this->Process(token, symbol);
 }
 
-void LexicalBlock::StartInteger(SimpleToken token, char symbol)
+void LexicalBlock::StartInteger(SimpleToken& token, char symbol)
 {
     if (token.type != SimpleTokenType::Digit)
         throw std::invalid_argument("Invalid integer");
 
-    LexicalBlock::combinedTokenVector.push_back(ComplexToken(ComplexTokenType::Integer, "", token.index));
-    LexicalBlock::Process(token, symbol);
+    std::string value = "";
+    this->combinedTokenVector.push_back(ComplexToken(ComplexTokenType::Integer, value, token.index));
+    this->Process(token, symbol);
 }
 
-void LexicalBlock::StartArithmeticSign(SimpleToken token)
+void LexicalBlock::StartArithmeticSign(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::ArithmeticSign)
         throw std::invalid_argument("Invalid arithmetic sign");
     
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartComparisonSign(SimpleToken token)
+void LexicalBlock::StartComparisonSign(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::ComparisonSign)
         throw std::invalid_argument("Invalid comparison sign");
     
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartLogicalSign(SimpleToken token)
+void LexicalBlock::StartLogicalSign(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::LogicalSign)
         throw std::invalid_argument("Invalid logical sign");
     
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartEqualSign(SimpleToken token)
+void LexicalBlock::StartEqualSign(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::EqualSign)
         throw std::invalid_argument("Invalid equal sign");
     
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartExclamationMark(SimpleToken token)
+void LexicalBlock::StartExclamationMark(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::ExclamationMark)
         throw std::invalid_argument("Invalid exclamation mark");
     
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartOpeningCurlyBrace(SimpleToken token)
+void LexicalBlock::StartOpeningCurlyBrace(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::OpeningCurlyBrace)
         throw std::invalid_argument("Invalid opening curly brace");
 
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartClosingCurlyBrace(SimpleToken token)
+void LexicalBlock::StartClosingCurlyBrace(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::ClosingCurlyBrace)
         throw std::invalid_argument("Invalid closing curly brace");
 
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartOpeningParenthesis(SimpleToken token)
+void LexicalBlock::StartOpeningParenthesis(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::OpeningParenthesis)
         throw std::invalid_argument("Invalid opening parenthesis");
 
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartClosingParenthesis(SimpleToken token)
+void LexicalBlock::StartClosingParenthesis(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::ClosingParenthesis)
         throw std::invalid_argument("Invalid closing parenthesis");
     
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartComma(SimpleToken token)
+void LexicalBlock::StartComma(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::Comma)
         throw std::invalid_argument("Invalid comma");
         
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartColon(SimpleToken token)
+void LexicalBlock::StartColon(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::Colon)
         throw std::invalid_argument("Invalid colon");
     
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartSemicolon(SimpleToken token)
+void LexicalBlock::StartSemicolon(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::Semicolon)
         throw std::invalid_argument("Invalid semicolon");
 
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::StartQuotationMark(SimpleToken token)
+void LexicalBlock::StartQuotationMark(SimpleToken& token)
 {
     if (token.type != SimpleTokenType::QuotationMark)
         throw std::invalid_argument("Invalid quotation mark");
 
-    LexicalBlock::combinedTokenVector.push_back(token);
-    LexicalBlock::Process(token);
+    this->combinedTokenVector.push_back(token);
+    this->Process(token);
 }
 
-void LexicalBlock::ProcessSymbolInState_SPACE(SimpleToken token, std::optional<char> symbol = std::nullopt)
+void LexicalBlock::ProcessSymbolInState_SPACE(SimpleToken& token, std::optional<char> symbol = std::nullopt)
 {
     switch (token.type)
     {
         case SimpleTokenType::Letter:
             if (!symbol.has_value())
                 throw std::invalid_argument("Invalid letter");
-            LexicalBlock::StartIdentifier(token, symbol.value());
-            LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
+            this->StartIdentifier(token, symbol.value());
+            this->SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
             return;
         case SimpleTokenType::Digit:
             if (!symbol.has_value())
                 throw std::invalid_argument("Invalid digit");
-            LexicalBlock::StartInteger(token, symbol.value());
-            LexicalBlock::SwitchState(LexicalBlockState::INTEGER);
+            this->StartInteger(token, symbol.value());
+            this->SwitchState(LexicalBlockState::INTEGER);
             return;
         case SimpleTokenType::OpeningCurlyBrace:
-            LexicalBlock::StartOpeningCurlyBrace(token);
+            this->StartOpeningCurlyBrace(token);
             return;
         case SimpleTokenType::ClosingCurlyBrace:
-            LexicalBlock::StartClosingCurlyBrace(token);
+            this->StartClosingCurlyBrace(token);
             return;
         case SimpleTokenType::OpeningParenthesis:
-            LexicalBlock::StartOpeningParenthesis(token);
+            this->StartOpeningParenthesis(token);
             return;
         case SimpleTokenType::ClosingParenthesis:
-            LexicalBlock::StartClosingParenthesis(token);
+            this->StartClosingParenthesis(token);
             return;
         case SimpleTokenType::Comma:
-            LexicalBlock::StartComma(token);
+            this->StartComma(token);
             return;
         case SimpleTokenType::Colon:
-            LexicalBlock::StartColon(token);
+            this->StartColon(token);
             return;
         case SimpleTokenType::Semicolon:
-            LexicalBlock::StartSemicolon(token);
+            this->StartSemicolon(token);
             return;
         case SimpleTokenType::QuotationMark:
-            LexicalBlock::StartQuotationMark(token);
+            this->StartQuotationMark(token);
             return;
         case SimpleTokenType::EqualSign:
-            LexicalBlock::StartEqualSign(token);
+            this->StartEqualSign(token);
             return;
         case SimpleTokenType::ExclamationMark:
-            LexicalBlock::StartExclamationMark(token);
+            this->StartExclamationMark(token);
             return;
         case SimpleTokenType::ComparisonSign:
-            LexicalBlock::StartComparisonSign(token);
+            this->StartComparisonSign(token);
             return;
         case SimpleTokenType::ArithmeticSign:
-            LexicalBlock::StartArithmeticSign(token);
+            this->StartArithmeticSign(token);
             return;
         case SimpleTokenType::LogicalSign:
-            LexicalBlock::StartLogicalSign(token);
+            this->StartLogicalSign(token);
             return;
         case SimpleTokenType::SpaceSign:
             return;
@@ -225,260 +233,261 @@ void LexicalBlock::ProcessSymbolInState_SPACE(SimpleToken token, std::optional<c
     }
 }
 
-void LexicalBlock::ProcessSymbolInState_IDENTIFIER_BEGIN(SimpleToken token, std::optional<char> symbol = std::nullopt)
+void LexicalBlock::ProcessSymbolInState_IDENTIFIER_BEGIN(SimpleToken& token, std::optional<char> symbol = std::nullopt)
 {
     switch (token.type)
     {
         case SimpleTokenType::Letter:
             if (!symbol.has_value())
                 throw std::invalid_argument("Invalid letter");
-            LexicalBlock::Process(token, symbol.value());
-            LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
+            this->Process(token, symbol.value());
+            this->SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
             return;
         case SimpleTokenType::Digit:
             if (!symbol.has_value())
                 throw std::invalid_argument("Invalid digit");
-            LexicalBlock::Process(token, symbol.value());
-            LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_END);
+            this->Process(token, symbol.value());
+            this->SwitchState(LexicalBlockState::IDENTIFIER_END);
             return;
         case SimpleTokenType::OpeningCurlyBrace:
-            LexicalBlock::StartOpeningCurlyBrace(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartOpeningCurlyBrace(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ClosingCurlyBrace:
-            LexicalBlock::StartClosingCurlyBrace(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartClosingCurlyBrace(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::OpeningParenthesis:
-            LexicalBlock::StartOpeningParenthesis(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartOpeningParenthesis(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ClosingParenthesis:
-            LexicalBlock::StartClosingParenthesis(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartClosingParenthesis(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::Comma:
-            LexicalBlock::StartComma(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartComma(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::Colon:
-            LexicalBlock::StartColon(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartColon(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::Semicolon:
-            LexicalBlock::StartSemicolon(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartSemicolon(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::QuotationMark:
-            LexicalBlock::StartQuotationMark(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartQuotationMark(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::EqualSign:
-            LexicalBlock::StartEqualSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartEqualSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ExclamationMark:
-            LexicalBlock::StartExclamationMark(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartExclamationMark(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ComparisonSign:
-            LexicalBlock::StartComparisonSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartComparisonSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ArithmeticSign:
-            LexicalBlock::StartArithmeticSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartArithmeticSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::LogicalSign:
-            LexicalBlock::StartLogicalSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartLogicalSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::SpaceSign:
         case SimpleTokenType::Other:
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
     }
 }
 
-void LexicalBlock::ProcessSymbolInState_IDENTIFIER_END(SimpleToken token, std::optional<char> symbol = std::nullopt)
+void LexicalBlock::ProcessSymbolInState_IDENTIFIER_END(SimpleToken& token, std::optional<char> symbol = std::nullopt)
 {
     switch (token.type)
     {
         case SimpleTokenType::Letter:
             if (!symbol.has_value())
                 throw std::invalid_argument("Invalid letter");
-            LexicalBlock::StartIdentifier(token, symbol.value());
-            LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
+            this->StartIdentifier(token, symbol.value());
+            this->SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
             return;
         case SimpleTokenType::Digit:
             if (!symbol.has_value())
                 throw std::invalid_argument("Invalid digit");
-            LexicalBlock::Process(token, symbol.value());
-            LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_END);
+            this->Process(token, symbol.value());
+            this->SwitchState(LexicalBlockState::IDENTIFIER_END);
             return;
         case SimpleTokenType::OpeningCurlyBrace:
-            LexicalBlock::StartOpeningCurlyBrace(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartOpeningCurlyBrace(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ClosingCurlyBrace:
-            LexicalBlock::StartClosingCurlyBrace(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartClosingCurlyBrace(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::OpeningParenthesis:
-            LexicalBlock::StartOpeningParenthesis(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartOpeningParenthesis(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ClosingParenthesis:
-            LexicalBlock::StartClosingParenthesis(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartClosingParenthesis(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::Comma:
-            LexicalBlock::StartComma(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartComma(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::Colon:
-            LexicalBlock::StartColon(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartColon(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::Semicolon:
-            LexicalBlock::StartSemicolon(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartSemicolon(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::QuotationMark:
-            LexicalBlock::StartQuotationMark(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartQuotationMark(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::EqualSign:
-            LexicalBlock::StartEqualSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartEqualSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ExclamationMark:
-            LexicalBlock::StartExclamationMark(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartExclamationMark(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ComparisonSign:
-            LexicalBlock::StartComparisonSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartComparisonSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ArithmeticSign:
-            LexicalBlock::StartArithmeticSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartArithmeticSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::LogicalSign:
-            LexicalBlock::StartLogicalSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartLogicalSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::SpaceSign:
         case SimpleTokenType::Other:
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
     }
 }
 
-void LexicalBlock::ProcessSymbolInState_INTEGER(SimpleToken token, std::optional<char> symbol = std::nullopt)
+void LexicalBlock::ProcessSymbolInState_INTEGER(SimpleToken& token, std::optional<char> symbol = std::nullopt)
 {
     switch (token.type)
     {
         case SimpleTokenType::Letter:
             if (!symbol.has_value())
                 throw std::invalid_argument("Invalid letter");
-            LexicalBlock::StartIdentifier(token, symbol.value());
-            LexicalBlock::SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
+            this->StartIdentifier(token, symbol.value());
+            this->SwitchState(LexicalBlockState::IDENTIFIER_BEGIN);
             return;
         case SimpleTokenType::Digit:
             if (!symbol.has_value())
                 throw std::invalid_argument("Invalid digit");
-            LexicalBlock::Process(token, symbol.value());
-            LexicalBlock::SwitchState(LexicalBlockState::INTEGER);
+            this->Process(token, symbol.value());
+            this->SwitchState(LexicalBlockState::INTEGER);
             return;
         case SimpleTokenType::OpeningCurlyBrace:
-            LexicalBlock::StartOpeningCurlyBrace(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartOpeningCurlyBrace(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ClosingCurlyBrace:
-            LexicalBlock::StartClosingCurlyBrace(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartClosingCurlyBrace(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::OpeningParenthesis:
-            LexicalBlock::StartOpeningParenthesis(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartOpeningParenthesis(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ClosingParenthesis:
-            LexicalBlock::StartClosingParenthesis(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartClosingParenthesis(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::Comma:
-            LexicalBlock::StartComma(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartComma(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::Colon:
-            LexicalBlock::StartColon(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartColon(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::Semicolon:
-            LexicalBlock::StartSemicolon(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartSemicolon(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::QuotationMark:
-            LexicalBlock::StartQuotationMark(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartQuotationMark(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::EqualSign:
-            LexicalBlock::StartEqualSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartEqualSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ExclamationMark:
-            LexicalBlock::StartExclamationMark(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartExclamationMark(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ComparisonSign:
-            LexicalBlock::StartComparisonSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartComparisonSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::ArithmeticSign:
-            LexicalBlock::StartArithmeticSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartArithmeticSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::LogicalSign:
-            LexicalBlock::StartLogicalSign(token);
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->StartLogicalSign(token);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
         case SimpleTokenType::SpaceSign:
         case SimpleTokenType::Other:
-            LexicalBlock::SwitchState(LexicalBlockState::SPACE);
+            this->SwitchState(LexicalBlockState::SPACE);
             return;
     }
 }
 
-void LexicalBlock::ProcessSymbolDependingOnState(SimpleToken token, std::optional<char> symbol = std::nullopt)
+void LexicalBlock::ProcessSymbolDependingOnState(SimpleToken& token, std::optional<char> symbol = std::nullopt)
 {
-    switch (LexicalBlock::state)
+    switch (this->state)
     {
         case LexicalBlockState::SPACE:
-            LexicalBlock::ProcessSymbolInState_SPACE(token, symbol);
+            this->ProcessSymbolInState_SPACE(token, symbol);
             break;
         case LexicalBlockState::IDENTIFIER_BEGIN:
-            LexicalBlock::ProcessSymbolInState_IDENTIFIER_BEGIN(token, symbol);
+            this->ProcessSymbolInState_IDENTIFIER_BEGIN(token, symbol);
             break;
         case LexicalBlockState::IDENTIFIER_END:
-            LexicalBlock::ProcessSymbolInState_IDENTIFIER_END(token, symbol);
+            this->ProcessSymbolInState_IDENTIFIER_END(token, symbol);
             break;
         case LexicalBlockState::INTEGER:
-            LexicalBlock::ProcessSymbolInState_INTEGER(token, symbol);
+            this->ProcessSymbolInState_INTEGER(token, symbol);
             break;
     }
 }
 
-std::vector<VariableToken> LexicalBlock::TransliterateString(std::string str)
+std::vector<VariableToken> LexicalBlock::TransliterateString(const std::string& str)
 {
+    TransliterationBlock transliterationBlock = TransliterationBlock();
     for (int i = 0; i < str.size(); i++)
     {
         char symbol = str[i];
         int index = i;
-        SimpleToken token = TransliterationBlock::TransliterateSymbol(symbol, index);
-        LexicalBlock::ProcessSymbolDependingOnState(token, symbol);
+        SimpleToken token = transliterationBlock.TransliterateSymbol(symbol, index);
+        this->ProcessSymbolDependingOnState(token, symbol);
     }
-    std::vector<VariableToken> result = LexicalBlock::combinedTokenVector;
-    LexicalBlock::combinedTokenVector.clear();
+    std::vector<VariableToken> result = this->combinedTokenVector;
+    this->combinedTokenVector.clear();
     return result;
 }

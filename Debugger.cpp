@@ -39,17 +39,20 @@ const char* Debugger::specialIdentifierTypes[] = {
     "SquareRootOfNumber",
 };
 
-void Debugger::AddMessageToVector(Message message, std::vector<std::vector<Message>>& messages)
+void Debugger::AddMessageToVector(const Message& message, std::vector<std::vector<Message>>& messages)
 {
+    #pragma omp critical
+    {
     messages[message.stringIndex].push_back(message);
+    }
 }
 
-void Debugger::PrintMessage(std::ofstream& file, Message message)
+void Debugger::PrintMessage(std::ofstream& file, const Message& message)
 {
     file << "Index: " << message.tokenIndex << "\t" << message.tokenValue << "\t" << message.message << std::endl;
 }
 
-void Debugger::PrintMessagesAndResults(std::ofstream& file, std::vector<std::vector<Message>> messages, std::vector<bool> results)
+void Debugger::PrintMessagesAndResults(std::ofstream& file, std::vector<std::vector<Message>>& messages, std::vector<bool>& results)
 {
     for (int i = 0; i < messages.size(); i++)
     {
@@ -74,7 +77,7 @@ void Debugger::PrintMessagesAndResults(std::ofstream& file, std::vector<std::vec
     }
 }
 
-void Debugger::PrintTokens(std::ofstream& file, std::string targetString, std::vector<VariableToken> combinedTokens)
+void Debugger::PrintTokens(std::ofstream& file, const std::string& targetString, const std::vector<VariableToken>& combinedTokens)
 {
     for (int i = 0; i < combinedTokens.size(); i++) {
         std::variant<SimpleToken, ComplexToken> combinedToken = combinedTokens[i];

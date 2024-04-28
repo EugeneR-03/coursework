@@ -7,10 +7,12 @@
 
 class SpecialIdentifierBlock
 {
-public:
-    static void TryChangeIdentifierTypeToSpecial(ComplexToken &token);
-    static bool IsSpecialIdentifier(ComplexToken token);
 private:
-    static std::unordered_map<std::size_t, SpecialIdentifierType> specialIdentifiersHashes;
-    static std::optional<SpecialIdentifierType> CheckString(std::string str);
+    std::unordered_map<std::size_t, SpecialIdentifierType> specialIdentifiersHashes;
+    std::optional<SpecialIdentifierType> CheckString(const std::string& str);
+public:
+    SpecialIdentifierBlock();
+    ~SpecialIdentifierBlock();
+    void TryChangeIdentifierTypeToSpecial(ComplexToken& token);
+    bool IsSpecialIdentifier(const ComplexToken& token);
 };

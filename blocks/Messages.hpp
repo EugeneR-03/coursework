@@ -8,13 +8,13 @@ struct Message
     int id;
     int stringIndex;
     int tokenIndex;
-    std::string tokenValue = "";
+    std::string tokenValue;
     std::string message;
     static int currentId;
 
     Message();
-    Message(int stringIndex, int tokenIndex, std::string message);
-    Message(int stringIndex, int tokenIndex, std::string tokenValue, std::string message);
+    Message(int stringIndex, int tokenIndex, const std::string& message);
+    Message(int stringIndex, int tokenIndex, const std::string& tokenValue, const std::string& message);
 
     bool operator<(const Message& other) const;
     bool operator>(const Message& other) const;
