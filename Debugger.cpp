@@ -39,12 +39,24 @@ const char* Debugger::specialIdentifierTypes[] = {
     "SquareRootOfNumber",
 };
 
-void Debugger::AddMessageToVector(const Message& message, std::vector<std::vector<Message>>& messages)
+// omp_lock_t Debugger::lock;
+
+Debugger::Debugger()
 {
-    #pragma omp critical
-    {
-    messages[message.stringIndex].push_back(message);
-    }
+    omp_init_lock(&lock);
+}
+
+void Debugger::AddMessageToVector(const Message& message, std::vector<std::set<Message>>& messages)
+{
+    // #pragma omp critical
+    // {
+    omp_set_lock(&lock);
+    // lock.lock();
+    // printf("String number %d\n", message.stringIndex);
+    messages[message.stringIndex].insert(message);
+    omp_unset_lock(&lock);
+    // lock.unlock();
+    // }
 }
 
 void Debugger::PrintMessage(std::ofstream& file, const Message& message)
@@ -52,15 +64,20 @@ void Debugger::PrintMessage(std::ofstream& file, const Message& message)
     file << "Index: " << message.tokenIndex << "\t" << message.tokenValue << "\t" << message.message << std::endl;
 }
 
-void Debugger::PrintMessagesAndResults(std::ofstream& file, std::vector<std::vector<Message>>& messages, std::vector<bool>& results)
+void Debugger::PrintMessagesAndResults(std::ofstream& file, std::vector<std::set<Message>>& messages, const std::vector<bool>& results)
 {
     for (int i = 0; i < messages.size(); i++)
     {
         file << "String: " << i+1 << std::endl;
-        for (int j = 0; j < messages[i].size(); j++)
+        // for (int j = 0; j < messages[i].size(); j++)
+        // {
+        //     file << "\t";
+        //     PrintMessage(file, messages[i][j]);
+        // }
+        for (auto it = messages[i].begin(); it != messages[i].end(); it++)
         {
             file << "\t";
-            PrintMessage(file, messages[i][j]);
+            PrintMessage(file, *it);
         }
         if (results[i])
         {

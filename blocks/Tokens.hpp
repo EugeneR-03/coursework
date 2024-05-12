@@ -22,7 +22,7 @@ struct SimpleToken : Token<SimpleTokenType>
 
 struct ComplexToken : Token<std::variant<ComplexTokenType, SpecialIdentifierType>>
 {
-    std::string value;
+    std::string value = "";
 
     ComplexToken(ComplexTokenType tokenType, const std::string& value, int index = -1);
     ComplexToken(SpecialIdentifierType tokenType, const std::string& value, int index = -1);

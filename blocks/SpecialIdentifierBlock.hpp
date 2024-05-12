@@ -8,7 +8,7 @@
 class SpecialIdentifierBlock
 {
 private:
-    std::unordered_map<std::size_t, SpecialIdentifierType> specialIdentifiersHashes;
+    static std::unordered_map<std::size_t, SpecialIdentifierType> specialIdentifiersHashes;
     std::optional<SpecialIdentifierType> CheckString(const std::string& str);
 public:
     SpecialIdentifierBlock();

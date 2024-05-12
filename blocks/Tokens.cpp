@@ -16,11 +16,20 @@ bool SimpleToken::operator==(const SimpleToken &token) const
     return type == token.type && index == token.index;
 }
 
-ComplexToken::ComplexToken(ComplexTokenType tokenType, const std::string& value, int index) : Token(tokenType, index), value(value) {}
+ComplexToken::ComplexToken(ComplexTokenType tokenType, const std::string& value, int index) : Token(tokenType, index)
+{
+    this->value = value;
+}
 
-ComplexToken::ComplexToken(SpecialIdentifierType tokenType, const std::string& value, int index) : Token(tokenType, index), value(value) {}
+ComplexToken::ComplexToken(SpecialIdentifierType tokenType, const std::string& value, int index) : Token(tokenType, index)
+{
+    this->value = value;
+}
 
-ComplexToken::ComplexToken(const std::variant<ComplexTokenType, SpecialIdentifierType>& tokenType, const std::string& value, int index) : Token(tokenType, index), value(value) {}
+ComplexToken::ComplexToken(const std::variant<ComplexTokenType, SpecialIdentifierType>& tokenType, const std::string& value, int index) : Token(tokenType, index)
+{
+    this->value = value;
+}
 
 bool ComplexToken::operator==(const ComplexToken &token) const
 {

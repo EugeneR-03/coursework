@@ -6,6 +6,7 @@
 #include <boost/signals2.hpp>
 #include <boost/bind/bind.hpp>
 #include <iostream>
+#include <omp.h>
 
 #include "Tokens.hpp"
 #include "Messages.hpp"
@@ -63,6 +64,7 @@ public:
 class SyntaxBlock
 {
 private:
+    static omp_lock_t lock;
     SyntaxBlockWorkingMode workingMode;
     std::vector<VariableToken> tokenVector;
     int currentTokenIndexInVector;
@@ -70,6 +72,7 @@ private:
 public:
     SyntaxBlock(SyntaxBlockWorkingMode workingMode = SyntaxBlockWorkingMode::UntilFirstError);
     ~SyntaxBlock();
+    static void InitLock();
     SyntaxBlockWorkingMode GetWorkingMode();
     void SetWorkingMode(SyntaxBlockWorkingMode workingMode);
     int GetStringIndex();
@@ -91,7 +94,7 @@ public:
             class OpeningCurlyBrace : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -99,7 +102,7 @@ public:
             class ClosingCurlyBrace : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -107,7 +110,7 @@ public:
             class OpeningParenthesis : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -115,7 +118,7 @@ public:
             class ClosingParenthesis : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -123,7 +126,7 @@ public:
             class Comma : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -131,7 +134,7 @@ public:
             class Colon : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -139,7 +142,7 @@ public:
             class Semicolon : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -147,7 +150,7 @@ public:
             class QuotationMark : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -155,7 +158,7 @@ public:
             class EqualSign : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -163,7 +166,7 @@ public:
             class ComparisonSign : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -171,7 +174,7 @@ public:
             class ExclamationMark : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -179,7 +182,7 @@ public:
             class ArithmeticSign : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -187,7 +190,7 @@ public:
             class LogicalSign : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -200,7 +203,7 @@ public:
             class Operation : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -208,7 +211,7 @@ public:
             class OperandOfUnaryOperation : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -216,7 +219,7 @@ public:
             class FirstOperandOfBinaryOperation : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -224,7 +227,7 @@ public:
             class SecondOperandOfBinaryOperation : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -232,7 +235,7 @@ public:
             class V : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -240,7 +243,7 @@ public:
             class No : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -248,7 +251,7 @@ public:
             class Real : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -256,7 +259,7 @@ public:
             class Solution : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -264,7 +267,7 @@ public:
             class Modulus : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -272,7 +275,7 @@ public:
             class SquareOfNumber : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -280,7 +283,7 @@ public:
             class SquareRootOfNumber : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -290,14 +293,14 @@ public:
         class Variable : public CFGTemplate
         {
         public:
-            static boost::signals2::signal<void (Message)> onErrorOccurs;
+            static boost::signals2::signal<void (const Message&)> onErrorOccurs;
             using CFGTemplate::CFGTemplate;
             bool Check(bool isSendingSignals = true) override;
             void Cancel(bool isSendingSignal = true) override;
             class Edge : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -305,7 +308,7 @@ public:
             class Identifier : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -313,7 +316,7 @@ public:
             class Integer : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -323,14 +326,14 @@ public:
         class Operation : public CFGTemplate
         {
         public:
-            static boost::signals2::signal<void (Message)> onErrorOccurs;
+            static boost::signals2::signal<void (const Message&)> onErrorOccurs;
             using CFGTemplate::CFGTemplate;
             bool Check(bool isSendingSignals = true) override;
             void Cancel(bool isSendingSignal = true) override;
             class Logical : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -338,7 +341,7 @@ public:
             class Arithmetic : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -348,7 +351,7 @@ public:
         class String : public CFGTemplate
         {
         public:
-            static boost::signals2::signal<void (Message)> onErrorOccurs;
+            static boost::signals2::signal<void (const Message&)> onErrorOccurs;
             using CFGTemplate::CFGTemplate;
             bool Check(bool isSendingSignals = true) override;
             void Cancel(bool isSendingSignal = true) override;
@@ -357,7 +360,7 @@ public:
             class Beginning : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -365,7 +368,7 @@ public:
             class Logical : public CFGTemplateInner
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplateInner::CFGTemplateInner;
                 bool Check(bool isSendingSignals = true, bool isCheckingInner = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -373,7 +376,7 @@ public:
             class Arithmetic : public CFGTemplateInner
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplateInner::CFGTemplateInner;
                 bool Check(bool isSendingSignals = true, bool isCheckingInner = true) override;
                 void Cancel(bool isSendingSignal = true) override;
@@ -381,7 +384,7 @@ public:
                 class NoRealSolution : public CFGTemplate
                 {
                 public:
-                    static boost::signals2::signal<void (Message)> onErrorOccurs;
+                    static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                     using CFGTemplate::CFGTemplate;
                     bool Check(bool isSendingSignals = true) override;
                     void Cancel(bool isSendingSignal = true) override;
@@ -390,14 +393,14 @@ public:
             class Inner : public CFGTemplate
             {
             public:
-                static boost::signals2::signal<void (Message)> onErrorOccurs;
+                static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                 using CFGTemplate::CFGTemplate;
                 bool Check(bool isSendingSignals = true) override;
                 void Cancel(bool isSendingSignal = true) override;
                 class Operation : public CFGTemplate
                 {
                 public:
-                    static boost::signals2::signal<void (Message)> onErrorOccurs;
+                    static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                     using CFGTemplate::CFGTemplate;
                     bool Check(bool isSendingSignals = true) override;
                     void Cancel(bool isSendingSignal = true) override;
@@ -405,7 +408,7 @@ public:
                 class Operand : public CFGTemplateInner
                 {
                 public:
-                    static boost::signals2::signal<void (Message)> onErrorOccurs;
+                    static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                     using CFGTemplateInner::CFGTemplateInner;
                     bool Check(bool isSendingSignals = true, bool isCheckingInner = true) override;
                     void Cancel(bool isSendingSignal = true) override;
@@ -413,7 +416,7 @@ public:
                     class Variable : public CFGTemplateInner
                     {
                     public:
-                        static boost::signals2::signal<void (Message)> onErrorOccurs;
+                        static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                         using CFGTemplateInner::CFGTemplateInner;
                         bool Check(bool isSendingSignals = true, bool isCheckingInner = true) override;
                         void Cancel(bool isSendingSignal = true) override;
@@ -421,7 +424,7 @@ public:
                     class Unary : public CFGTemplateInner
                     {
                     public:
-                        static boost::signals2::signal<void (Message)> onErrorOccurs;
+                        static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                         using CFGTemplateInner::CFGTemplateInner;
                         bool Check(bool isSendingSignals = true, bool isCheckingInner = true) override;
                         void Cancel(bool isSendingSignal = true) override;
@@ -429,14 +432,14 @@ public:
                     class Binary : public CFGTemplateInner
                     {
                     public:
-                        static boost::signals2::signal<void (Message)> onErrorOccurs;
+                        static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                         using CFGTemplateInner::CFGTemplateInner;
                         bool Check(bool isSendingSignals = true, bool isCheckingInner = true) override;
                         void Cancel(bool isSendingSignal = true) override;
                         class First : public CFGTemplateInner
                         {
                         public:
-                            static boost::signals2::signal<void (Message)> onErrorOccurs;
+                            static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                             using CFGTemplateInner::CFGTemplateInner;
                             bool Check(bool isSendingSignals = true, bool isCheckingInner = true) override;
                             void Cancel(bool isSendingSignal = true) override;
@@ -444,7 +447,7 @@ public:
                         class Second : public CFGTemplateInner
                         {
                         public:
-                            static boost::signals2::signal<void (Message)> onErrorOccurs;
+                            static boost::signals2::signal<void (const Message&)> onErrorOccurs;
                             using CFGTemplateInner::CFGTemplateInner;
                             bool Check(bool isSendingSignals = true, bool isCheckingInner = true) override;
                             void Cancel(bool isSendingSignal = true) override;

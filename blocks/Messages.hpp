@@ -5,12 +5,12 @@
 
 struct Message
 {
-    int id;
+    // int id;
     int stringIndex;
     int tokenIndex;
-    std::string tokenValue;
-    std::string message;
-    static int currentId;
+    std::string tokenValue = "";
+    std::string message = "";
+    // static int currentId;
 
     Message();
     Message(int stringIndex, int tokenIndex, const std::string& message);

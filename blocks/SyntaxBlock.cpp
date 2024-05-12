@@ -14,137 +14,139 @@ CFGTemplateInner::CFGTemplateInner(SyntaxBlock* syntaxBlock) : syntaxBlock(synta
 // int SyntaxBlock::stringIndex = 0;
 
 // int SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::OpeningParenthesis::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::OpeningParenthesis::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::OpeningParenthesis::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::ClosingParenthesis::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::ClosingParenthesis::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::ClosingParenthesis::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::Comma::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::Comma::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::Comma::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::Colon::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::Colon::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::Colon::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::Semicolon::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::Semicolon::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::Semicolon::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::QuotationMark::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::QuotationMark::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::QuotationMark::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::EqualSign::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::EqualSign::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::EqualSign::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::ComparisonSign::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::ComparisonSign::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::ComparisonSign::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::ExclamationMark::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::ExclamationMark::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::ExclamationMark::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::ArithmeticSign::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::ArithmeticSign::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::ArithmeticSign::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Symbol::LogicalSign::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Symbol::LogicalSign::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Symbol::LogicalSign::onErrorOccurs;
 
 // int SyntaxBlock::CFG::SpecialIdentifier::Operation::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::Operation::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::SpecialIdentifier::Operation::onErrorOccurs;
 
 // int SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::onErrorOccurs;
 
 // int SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::onErrorOccurs;
 
 // int SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::onErrorOccurs;
 
 // int SyntaxBlock::CFG::SpecialIdentifier::V::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::V::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::SpecialIdentifier::V::onErrorOccurs;
 
 // int SyntaxBlock::CFG::SpecialIdentifier::No::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::No::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::SpecialIdentifier::No::onErrorOccurs;
 
 // int SyntaxBlock::CFG::SpecialIdentifier::Real::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::Real::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::SpecialIdentifier::Real::onErrorOccurs;
 
 // int SyntaxBlock::CFG::SpecialIdentifier::Solution::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::Solution::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::SpecialIdentifier::Solution::onErrorOccurs;
 
 // int SyntaxBlock::CFG::SpecialIdentifier::Modulus::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::Modulus::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::SpecialIdentifier::Modulus::onErrorOccurs;
 
 // int SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::onErrorOccurs;
 
 // int SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::onErrorOccurs;
 
 
 // int SyntaxBlock::CFG::Variable::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Variable::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Variable::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Variable::Edge::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Variable::Edge::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Variable::Edge::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Variable::Identifier::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Variable::Identifier::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Variable::Identifier::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Variable::Integer::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Variable::Integer::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Variable::Integer::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Operation::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Operation::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Operation::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Operation::Logical::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Operation::Logical::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Operation::Logical::onErrorOccurs;
 
 // int SyntaxBlock::CFG::Operation::Arithmetic::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::Operation::Arithmetic::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::Operation::Arithmetic::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Beginning::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Beginning::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Beginning::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Logical::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Logical::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Logical::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Arithmetic::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Arithmetic::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Arithmetic::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Inner::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Inner::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Inner::Operation::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operation::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Inner::Operation::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Inner::Operand::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Inner::Operand::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Inner::Operand::Variable::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::Variable::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Inner::Operand::Variable::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Inner::Operand::Unary::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::Unary::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Inner::Operand::Unary::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Inner::Operand::Binary::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::Binary::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Inner::Operand::Binary::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Inner::Operand::Binary::First::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::Binary::First::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Inner::Operand::Binary::First::onErrorOccurs;
 
 // int SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::beginningIndex;
-boost::signals2::signal<void (Message)> SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::onErrorOccurs;
+boost::signals2::signal<void (const Message&)> SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::onErrorOccurs;
+
+omp_lock_t SyntaxBlock::lock;
 
 SyntaxBlock::SyntaxBlock(SyntaxBlockWorkingMode workingMode)
 {
@@ -156,6 +158,11 @@ SyntaxBlock::SyntaxBlock(SyntaxBlockWorkingMode workingMode)
 SyntaxBlock::~SyntaxBlock()
 {
     this->tokenVector.clear();
+}
+
+void SyntaxBlock::InitLock()
+{
+    omp_init_lock(&lock);
 }
 
 SyntaxBlockWorkingMode SyntaxBlock::GetWorkingMode()
@@ -262,7 +269,9 @@ void SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::Cancel(bool isSendingSignal)
 {
     if (isSendingSignal)
     {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["OpeningCurlyBrace"]));
+        omp_unset_lock(&lock);
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
 }
@@ -289,7 +298,9 @@ void SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::Cancel(bool isSendingSignal)
 {
     if (isSendingSignal)
     {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["ClosingCurlyBrace"]));
+        omp_unset_lock(&lock);
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
 }
@@ -318,7 +329,9 @@ void SyntaxBlock::CFG::Symbol::OpeningParenthesis::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["OpeningParenthesis"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -348,7 +361,9 @@ void SyntaxBlock::CFG::Symbol::ClosingParenthesis::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["ClosingParenthesis"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -378,7 +393,9 @@ void SyntaxBlock::CFG::Symbol::Comma::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["Comma"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -408,7 +425,9 @@ void SyntaxBlock::CFG::Symbol::Colon::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["Colon"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -438,7 +457,9 @@ void SyntaxBlock::CFG::Symbol::Semicolon::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["Semicolon"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -468,7 +489,9 @@ void SyntaxBlock::CFG::Symbol::QuotationMark::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["QuotationMark"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -498,7 +521,9 @@ void SyntaxBlock::CFG::Symbol::EqualSign::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["EqualSign"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -528,7 +553,9 @@ void SyntaxBlock::CFG::Symbol::ComparisonSign::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["ComparisonSign"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -558,7 +585,9 @@ void SyntaxBlock::CFG::Symbol::ExclamationMark::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["ExclamationMark"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -588,7 +617,9 @@ void SyntaxBlock::CFG::Symbol::ArithmeticSign::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["ArithmeticSign"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -618,7 +649,9 @@ void SyntaxBlock::CFG::Symbol::LogicalSign::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Symbol["LogicalSign"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -648,7 +681,9 @@ void SyntaxBlock::CFG::SpecialIdentifier::Operation::Cancel(bool isSendingSignal
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::SpecialIdentifier["Operation"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -682,7 +717,9 @@ void SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::Cancel(bool i
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::SpecialIdentifier["OperandOfUnaryOperation"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -716,7 +753,9 @@ void SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::Cancel(
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::SpecialIdentifier["FirstOperandOfBinaryOperation"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -750,7 +789,9 @@ void SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::Cancel
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::SpecialIdentifier["SecondOperandOfBinaryOperation"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -784,7 +825,9 @@ void SyntaxBlock::CFG::SpecialIdentifier::V::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::SpecialIdentifier["V"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -818,7 +861,9 @@ void SyntaxBlock::CFG::SpecialIdentifier::No::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::SpecialIdentifier["No"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -852,7 +897,9 @@ void SyntaxBlock::CFG::SpecialIdentifier::Real::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::SpecialIdentifier["Real"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -886,7 +933,9 @@ void SyntaxBlock::CFG::SpecialIdentifier::Solution::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::SpecialIdentifier["Solution"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -920,7 +969,9 @@ void SyntaxBlock::CFG::SpecialIdentifier::Modulus::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::SpecialIdentifier["Modulus"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -954,7 +1005,9 @@ void SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::Cancel(bool isSendingS
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::SpecialIdentifier["SquareOfNumber"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -988,7 +1041,9 @@ void SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::Cancel(bool isSend
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::SpecialIdentifier["SquareRootOfNumber"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1022,7 +1077,9 @@ void SyntaxBlock::CFG::Variable::Identifier::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Variable["Identifier"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1058,7 +1115,9 @@ void SyntaxBlock::CFG::Variable::Integer::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Variable["Integer"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1094,7 +1153,9 @@ void SyntaxBlock::CFG::Variable::Edge::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Variable["Edge"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1156,7 +1217,9 @@ void SyntaxBlock::CFG::Variable::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Variable["Variable"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1188,7 +1251,9 @@ void SyntaxBlock::CFG::Operation::Logical::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Operation["Logical"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1238,7 +1303,9 @@ void SyntaxBlock::CFG::Operation::Arithmetic::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Operation["Arithmetic"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1274,7 +1341,9 @@ void SyntaxBlock::CFG::Operation::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::Operation["Operation"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1302,7 +1371,9 @@ void SyntaxBlock::CFG::String::Beginning::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::String["Beginning"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1330,7 +1401,9 @@ void SyntaxBlock::CFG::String::Inner::Operation::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::StringInner["Operation"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1384,7 +1457,9 @@ void SyntaxBlock::CFG::String::Inner::Operand::Unary::Cancel(bool isSendingSigna
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::StringInner["OperandUnary"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1453,7 +1528,9 @@ void SyntaxBlock::CFG::String::Inner::Operand::Binary::First::Cancel(bool isSend
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::StringInner["FirstOperandOfBinaryOperation"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1522,7 +1599,9 @@ void SyntaxBlock::CFG::String::Inner::Operand::Binary::Second::Cancel(bool isSen
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::StringInner["SecondOperandOfBinaryOperation"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1591,7 +1670,9 @@ void SyntaxBlock::CFG::String::Inner::Operand::Binary::Cancel(bool isSendingSign
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::StringInner["OperandBinary"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1625,7 +1706,9 @@ void SyntaxBlock::CFG::String::Inner::Operand::Variable::Cancel(bool isSendingSi
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::StringInner["OperandVariable"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1657,7 +1740,9 @@ void SyntaxBlock::CFG::String::Inner::Operand::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::StringInner["Operand"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1685,7 +1770,9 @@ void SyntaxBlock::CFG::String::Inner::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::StringInner["Inner"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1729,7 +1816,9 @@ void SyntaxBlock::CFG::String::Logical::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::String["Logical"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1771,7 +1860,9 @@ void SyntaxBlock::CFG::String::Arithmetic::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::String["Arithmetic"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1819,7 +1910,9 @@ void SyntaxBlock::CFG::String::Arithmetic::NoRealSolution::Cancel(bool isSending
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::String["ArithmeticNoRealSolution"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1894,7 +1987,9 @@ void SyntaxBlock::CFG::String::Cancel(bool isSendingSignal)
     {
         // #pragma omp critical
         // {
+        omp_set_lock(&lock);
         onErrorOccurs(syntaxBlock->MakeMessage(syntaxBlock->GetCurrentToken(), MessagePool::String["String"]));
+        omp_unset_lock(&lock);
         // }
     }
     syntaxBlock->currentTokenIndexInVector = beginningIndex;
@@ -1951,12 +2046,18 @@ void SyntaxBlock::CFG::String::CheckAllInnerParts(bool isSendingSignal, bool isC
             if (openingCurlyBrace.Check(false))
             {
                 openingCurlyBrace.Cancel(false);
-                SyntaxBlock::CFG::String::Logical(syntaxBlock).Check(isSendingSignal, isCheckingInner);
+                if (SyntaxBlock::CFG::String::Logical(syntaxBlock).Check(isSendingSignal, isCheckingInner))
+                {
+                    // currentIndex = syntaxBlock->currentTokenIndexInVector-1;
+                }
             }
         }
         else if (SyntaxBlock::CFG::Symbol::Semicolon(syntaxBlock).Check(false))
         {
-            SyntaxBlock::CFG::String::Arithmetic(syntaxBlock).Check(isSendingSignal, isCheckingInner);
+            if (SyntaxBlock::CFG::String::Arithmetic(syntaxBlock).Check(isSendingSignal, isCheckingInner))
+            {
+                // currentIndex = syntaxBlock->currentTokenIndexInVector-1;
+            }
         }
         // проверка граней (Edge)
         else if (identifier.Check(false))

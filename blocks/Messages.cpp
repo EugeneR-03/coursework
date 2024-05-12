@@ -2,11 +2,11 @@
 
 // Message
 
-int Message::currentId = 0;
+// int Message::currentId = 0;
 
 Message::Message()
 {
-    this->id = ++currentId;
+    // this->id = ++currentId;
     this->stringIndex = -1;
     this->tokenIndex = -1;
     this->tokenValue = "";
@@ -15,7 +15,7 @@ Message::Message()
 
 Message::Message(int stringIndex, int tokenIndex, const std::string& message)
 {
-    this->id = ++currentId;
+    // this->id = ++currentId;
     this->stringIndex = stringIndex;
     this->tokenIndex = tokenIndex;
     this->tokenValue = "";
@@ -24,7 +24,7 @@ Message::Message(int stringIndex, int tokenIndex, const std::string& message)
 
 Message::Message(int stringIndex, int tokenIndex, const std::string& tokenValue, const std::string& message)
 {
-    this->id = ++currentId;
+    // this->id = ++currentId;
     this->stringIndex = stringIndex;
     this->tokenIndex = tokenIndex;
     this->tokenValue = tokenValue;
@@ -33,17 +33,23 @@ Message::Message(int stringIndex, int tokenIndex, const std::string& tokenValue,
 
 bool Message::operator<(const Message& other) const
 {
-    return id < other.id;
+    // return id < other.id;
+    return tokenIndex < other.tokenIndex;
 }
 
 bool Message::operator>(const Message& other) const
 {
-    return id > other.id;
+    // return id > other.id;
+    return tokenIndex > other.tokenIndex;
 }
 
 bool Message::operator==(const Message& other) const
 {
-    return id == other.id;
+    // return id == other.id;
+    return stringIndex == other.stringIndex && 
+        tokenIndex == other.tokenIndex && 
+        tokenValue == other.tokenValue && 
+        message == other.message;
 }
 
 // MessagePool

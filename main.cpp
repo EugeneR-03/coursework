@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <set>
 #include "json.hpp"
 
 #include <chrono>
@@ -79,44 +80,44 @@ struct Settings
     }
 };
 
-void ConnectEvents(std::vector<std::vector<Message>>& messages)
+void ConnectEvents(Debugger& debugger, std::vector<std::set<Message>>& messages)
 {
-    SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::OpeningParenthesis::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::ClosingParenthesis::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::Comma::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::Colon::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::Semicolon::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::QuotationMark::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::EqualSign::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::ComparisonSign::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::ExclamationMark::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::ArithmeticSign::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Symbol::LogicalSign::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::OpeningCurlyBrace::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::ClosingCurlyBrace::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::OpeningParenthesis::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::ClosingParenthesis::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::Comma::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::Colon::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::Semicolon::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::QuotationMark::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::EqualSign::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::ComparisonSign::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::ExclamationMark::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::ArithmeticSign::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Symbol::LogicalSign::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
     
-    SyntaxBlock::CFG::SpecialIdentifier::Operation::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::SpecialIdentifier::Modulus::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::SpecialIdentifier::Operation::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::SpecialIdentifier::OperandOfUnaryOperation::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::SpecialIdentifier::FirstOperandOfBinaryOperation::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::SpecialIdentifier::SecondOperandOfBinaryOperation::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::SpecialIdentifier::Modulus::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::SpecialIdentifier::SquareOfNumber::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::SpecialIdentifier::SquareRootOfNumber::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
 
-    SyntaxBlock::CFG::Variable::Edge::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Variable::Identifier::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Variable::Integer::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Variable::Edge::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Variable::Identifier::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Variable::Integer::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
     
-    SyntaxBlock::CFG::Operation::Logical::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::Operation::Arithmetic::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Operation::Logical::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::Operation::Arithmetic::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
 
-    SyntaxBlock::CFG::String::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::String::Beginning::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::String::Logical::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::String::Arithmetic::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::String::Inner::Operation::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::String::Inner::Operand::Variable::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
-    SyntaxBlock::CFG::String::Inner::Operand::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::String::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::String::Beginning::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::String::Logical::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::String::Arithmetic::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::String::Inner::Operation::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::String::Inner::Operand::Variable::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
+    SyntaxBlock::CFG::String::Inner::Operand::onErrorOccurs.connect(boost::bind(Debugger::AddMessageToVector, &debugger, boost::placeholders::_1, boost::ref(messages)));
 }
 
 int main(int argc, char* argv[])
@@ -131,32 +132,32 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    std::vector<std::vector<Message>> messages = std::vector<std::vector<Message>>(stringsCount);
+    // std::vector<std::vector<Message>> messages = std::vector<std::vector<Message>>(stringsCount);
+    std::vector<std::set<Message>> messages = std::vector<std::set<Message>>(stringsCount);
     std::vector<bool> results = std::vector<bool>(stringsCount);
 
-    ConnectEvents(messages);
+    SyntaxBlock::InitLock();
+    Debugger debugger = Debugger();
+    ConnectEvents(debugger, messages);
     
     auto start = std::chrono::steady_clock::now();
-    
+
     #pragma omp parallel for
     for (int stringIndex = 0; stringIndex < stringsCount; stringIndex++)
     {
         MainBlock mainBlock = MainBlock(settings.errorsMode);
         bool result = mainBlock.CheckString(stringIndex, strings[stringIndex], settings.errorsMode);
-        #pragma omp critical
-        {
         results[stringIndex] = result;
-        }
     }
 
-    for (int i = 0; i < messages.size(); i++)
-    {
-        std::sort(messages[i].begin(), messages[i].end(),
-            [](const Message& a, const Message& b) -> bool
-            {
-                return a.tokenIndex < b.tokenIndex;
-            });
-    }
+    // for (int i = 0; i < messages.size(); i++)
+    // {
+    //     std::sort(messages[i].begin(), messages[i].end(),
+    //         [](const Message& a, const Message& b) -> bool
+    //         {
+    //             return a.tokenIndex < b.tokenIndex;
+    //         });
+    // }
 
     auto end = std::chrono::steady_clock::now();
 
@@ -169,7 +170,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    Debugger::PrintMessagesAndResults(outputFile, messages, results);
+    debugger.PrintMessagesAndResults(outputFile, messages, results);
 
     outputFile.close();
 }

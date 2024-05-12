@@ -17,10 +17,15 @@ void LexicalBlock::SwitchState(LexicalBlockState newState)
 
 void LexicalBlock::Process(const VariableToken& token, std::optional<char> symbol = std::nullopt)
 {
-    if (std::holds_alternative<ComplexToken>(combinedTokenVector[combinedTokenVector.size() - 2]))
+    // auto buf = combinedTokenVector[combinedTokenVector.size() - 2];
+    if (combinedTokenVector.size() > 1)
     {
-        SpecialIdentifierBlock specialIdentifierBlock = SpecialIdentifierBlock();
-        specialIdentifierBlock.TryChangeIdentifierTypeToSpecial(std::get<ComplexToken>(combinedTokenVector[combinedTokenVector.size() - 2]));
+        // auto buf = combinedTokenVector[combinedTokenVector.size() - 2];
+        if (std::holds_alternative<ComplexToken>(combinedTokenVector[combinedTokenVector.size() - 2]))
+        {
+            SpecialIdentifierBlock specialIdentifierBlock = SpecialIdentifierBlock();
+            specialIdentifierBlock.TryChangeIdentifierTypeToSpecial(std::get<ComplexToken>(combinedTokenVector[combinedTokenVector.size() - 2]));
+        }
     }
     if (!symbol.has_value())
         return;

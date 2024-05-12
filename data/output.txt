@@ -2,20 +2,22 @@ String: 1
 	Result: true
 
 String: 2
+	Index: 9		Error: String::Arithmetic
 	Index: 11	o1	Error: SpecialIdentifier::Operation
-	Index: 11	o1	Error: String::Inner::Operation
+	Index: 20		Error: String::Inner::Variable
+	Index: 27	o1	Error: SpecialIdentifier::Operation
 	Result: false
 
 String: 3
 	Result: true
 
 String: 4
+	Index: 9		Error: String::Arithmetic
 	Index: 11	o2	Error: SpecialIdentifier::Operation
-	Index: 11	o2	Error: String::Inner::Operation
+	Index: 20		Error: String::Inner::Variable
 	Index: 30	123	Error: Colon
-	Index: 30	123	Error: String::Inner::Operation
+	Index: 38		Error: String::Inner::Variable
 	Index: 44	123	Error: QuotationMark
-	Index: 44	123	Error: String::Inner::Operation
 	Result: false
 
 String: 5
