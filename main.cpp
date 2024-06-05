@@ -1,84 +1,15 @@
-#include "./blocks/MainBlock.hpp"
-#include "Debugger.hpp"
+#include "./main-blocks/MainBlock.hpp"
+#include "./utils/Debugger.hpp"
+#include "./utils/Settings.hpp"
+#include "./utils/FileSystem.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <set>
-#include "json.hpp"
 
 #include <chrono>
-#include <thread>
-#include <future>
-
-// using namespace std::string_literals;
-
-template<typename T>
-std::vector<std::string> ReadStringsFromFile(T filename)
-{
-    std::vector<std::string> result;
-
-    std::ifstream file;
-    file.open(filename);
-
-    if (file.is_open())
-    {
-        std::string line;
-        while (std::getline(file, line))
-        {
-            result.push_back(line);
-        }
-        file.close();
-    }
-
-    return result;
-}
-
-struct Settings
-{
-    std::string inputFilePath;
-    std::string outputFilePath;
-    DebuggerWorkingMode debugMode;
-    SyntaxBlockWorkingMode errorsMode;
-
-    Settings(std::string configFilePath)
-    {
-        std::ifstream configFile(configFilePath);
-        nlohmann::json config;
-        configFile >> config;
-        configFile.close();
-
-        this->inputFilePath = config["Settings"]["InputFilePath"];
-        this->outputFilePath = config["Settings"]["OutputFilePath"];
-        std::string debugMode = config["Settings"]["DebugMode"];
-        std::string errorsMode = config["Settings"]["Errors"];
-        if (debugMode == "None")
-        {
-            this->debugMode = DebuggerWorkingMode::None;
-        }
-        else if (debugMode == "Normal")
-        {
-            this->debugMode = DebuggerWorkingMode::Normal;
-        }
-        else if (debugMode == "Verbose")
-        {
-            this->debugMode = DebuggerWorkingMode::Verbose;
-        }
-        if (errorsMode == "UntilFirst")
-        {
-            this->errorsMode = SyntaxBlockWorkingMode::UntilFirstError;
-        }
-        else if (errorsMode == "AllWithoutInner")
-        {
-            this->errorsMode = SyntaxBlockWorkingMode::AllErrorsWithoutInner;
-        }
-        else if (errorsMode == "All")
-        {
-            this->errorsMode = SyntaxBlockWorkingMode::AllErrors;
-        }
-    }
-};
 
 void ConnectEvents(Debugger& debugger, std::vector<std::set<Message>>& messages)
 {
@@ -124,7 +55,17 @@ int main(int argc, char* argv[])
 {
     Settings settings("config.json");
 
-    std::vector<std::string> strings = ReadStringsFromFile(settings.inputFilePath);
+    switch (settings.language)
+    {
+        case Language::English:
+            MessagePool::SwitchPoolToLanguage(Language::English);
+            break;
+        case Language::Russian:
+            MessagePool::SwitchPoolToLanguage(Language::Russian);
+            break;
+    }
+
+    std::vector<std::string> strings = FileSystem::ReadStringsFromFile(settings.inputFilePath);
     int stringsCount = strings.size();
 
     if (settings.debugMode == DebuggerWorkingMode::None)
@@ -132,7 +73,6 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    // std::vector<std::vector<Message>> messages = std::vector<std::vector<Message>>(stringsCount);
     std::vector<std::set<Message>> messages = std::vector<std::set<Message>>(stringsCount);
     std::vector<bool> results = std::vector<bool>(stringsCount);
 
@@ -149,15 +89,6 @@ int main(int argc, char* argv[])
         bool result = mainBlock.CheckString(stringIndex, strings[stringIndex], settings.errorsMode);
         results[stringIndex] = result;
     }
-
-    // for (int i = 0; i < messages.size(); i++)
-    // {
-    //     std::sort(messages[i].begin(), messages[i].end(),
-    //         [](const Message& a, const Message& b) -> bool
-    //         {
-    //             return a.tokenIndex < b.tokenIndex;
-    //         });
-    // }
 
     auto end = std::chrono::steady_clock::now();
 

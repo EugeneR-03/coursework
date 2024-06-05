@@ -5,14 +5,17 @@
             "label": "C/C++: g++.exe сборка активного файла",
             "command": "g++.exe",
             "args": [
-                "-std=c++17",
+                "-std=c++20",
                 "-fopenmp",
+                "-O3",
                 "-fdiagnostics-color=always",
                 "-I",
                 "C:\\Boost\\boost_1_84_0",
                 "-g",
-                "${fileDirname}\\*.cpp",
-                "${fileDirname}\\blocks\\*.cpp",
+                "${fileDirname}\\${fileBasenameNoExtension}.cpp",
+                "${fileDirname}\\base-blocks\\*.cpp",
+                "${fileDirname}\\main-blocks\\*.cpp",
+                "${fileDirname}\\utils\\*.cpp",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
@@ -26,14 +29,75 @@
                 "kind": "build",
                 "isDefault": false
             },
-            "detail": "Задача создана отладчиком."
+            "detail": "Основная программа."
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe сборка активного файла",
+            "command": "g++.exe",
+            "args": [
+                "-std=c++20",
+                // "-fopenmp",
+                // "-O3",
+                "-fdiagnostics-color=always",
+                // "-I",
+                // "C:\\Boost\\boost_1_84_0",
+                "-g",
+                "${fileDirname}\\${fileBasenameNoExtension}.cpp",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Один файл."
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe сборка активного файла",
+            "command": "g++.exe",
+            "args": [
+                "-std=c++20",
+                "-lstdc++fs",
+                // "-fopenmp",
+                // "-O3",
+                "-fdiagnostics-color=always",
+                "-I",
+                "C:\\Boost\\boost_1_84_0",
+                "-g",
+                "${fileDirname}\\${fileBasenameNoExtension}.cpp",
+                "${fileDirname}\\base-blocks\\*.cpp",
+                "${fileDirname}\\utils\\FileSystem.cpp",
+                "${fileDirname}\\utils\\Settings.cpp",
+                "${fileDirname}\\menu\\*.cpp",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Меню."
         },
         {
             "type": "cppbuild",
             "label": "C/C++: g++.exe сборка тестов",
             "command": "g++.exe",
             "args": [
-                "-std=c++17",
+                "-std=c++20",
                 "-fdiagnostics-color=always",
                 "-I",
                 "C:\\Boost\\boost_1_84_0",

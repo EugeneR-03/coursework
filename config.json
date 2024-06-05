@@ -1,8 +1,9 @@
 {
     "Settings": {
-        "InputFilePath": "./data/input.txt",
-        "OutputFilePath": "./data/output.txt",
         "DebugMode": "Normal",
-        "Errors": "All"
+        "Errors": "All",
+        "InputFilePath": ".\\data\\input.txt",
+        "Language": "Russian",
+        "OutputFilePath": ".\\data\\output.txt"
     }
 }
