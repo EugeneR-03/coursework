@@ -21,15 +21,6 @@ enum class SyntaxBlockWorkingMode
     AllErrors,
 };
 
-// class CFGHighLevelToken
-// {
-// public:
-//     static bool Identifier();
-//     static bool Operation();
-//     static bool LogicalOperation();
-//     static bool ArithmeticOperation();
-// };
-
 class SyntaxBlock;
 
 class CFGTemplate
@@ -53,13 +44,6 @@ public:
     virtual void Cancel(bool isSendingSignal = true) = 0;
     virtual bool Check(bool isSendingSignals = true, bool isCheckingInner = true) = 0;
 };
-
-// class CFGTemplateInner : public CFGTemplate
-// {
-// public:
-//     using CFGTemplate::CFGTemplate;
-//     virtual bool Check(bool isSendingSignals = true, bool isCheckingInner = true) = 0;
-// };
 
 class SyntaxBlock
 {

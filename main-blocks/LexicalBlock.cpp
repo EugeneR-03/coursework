@@ -1,10 +1,5 @@
 #include "LexicalBlock.hpp"
 
-// начальное значение
-// LexicalBlockState LexicalBlock::state = LexicalBlockState::SPACE;
-
-// std::vector<VariableToken> LexicalBlock::combinedTokenVector;
-
 LexicalBlock::LexicalBlock()
 {
     this->state = LexicalBlockState::SPACE;

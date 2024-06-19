@@ -60,6 +60,7 @@ int main(int argc, char* argv[])
         case Language::English:
             MessagePool::SwitchPoolToLanguage(Language::English);
             break;
+            
         case Language::Russian:
             MessagePool::SwitchPoolToLanguage(Language::Russian);
             break;

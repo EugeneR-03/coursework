@@ -1,15 +1,19 @@
-Строка: 1
-	Позиция: 5		Ошибка: неверный формат логической части строки (часть с условием у условного Q-терма)
-	Позиция: 7	o1	Ошибка: неверное ключевое слово (операция, 'op')
-	Позиция: 18		Ошибка: неверный формат операнда внутри строки
-	Позиция: 47		Ошибка: неверный формат арифметической части строки
-	Результат: ☓ Есть ошибки
+String: 1
+	Position: 5		Error: invalid structure of logical part of string
+	Position: 7	o1	Error: invalid keyword (operation, 'op')
+	Position: 18		Error: invalid form of operand in string
+	Position: 47		Error: invalid structure of arithmetic part of string
+	Result: ☓ There are errors
 
-Строка: 2
-	Результат: ✓ Нет ошибок
+String: 2
+	Position: 5		Error: invalid structure of logical part of string
+	Position: 16		Error: invalid form of operand in string
+	Result: ☓ There are errors
 
-Строка: 3
-	Результат: ✓ Нет ошибок
+String: 3
+	Position: 5		Error: invalid structure of logical part of string
+	Position: 16		Error: invalid form of operand in string
+	Result: ☓ There are errors
 
-Строка: 4
-	Результат: ✓ Нет ошибок
+String: 4
+	Result: ✓ No errors
